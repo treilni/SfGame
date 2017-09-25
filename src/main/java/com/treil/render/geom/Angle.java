@@ -4,7 +4,7 @@ package com.treil.render.geom;
  * @author Nicolas
  * @since 26/01/2017.
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Angle {
     public static final double PI = Math.PI;
     public static final double HALF_PI = Math.PI / 2.0;
