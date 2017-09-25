@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <configuration debug="true"> -->
+<configuration scan="true" scanPeriod="30 seconds">
+	<!-- Allow JMX dynamic configuration (using jconsole -->
+	<contextName>SfGame</contextName>
+	<jmxConfigurator/>
+
+	<!-- Location of the files for non console logging -->
+	<property name="LOG_DIR" value="/usr/local/axigate/logfiles/release"/>
+	<!-- The pattern to use for logging -->
+	<property name="PATTERN" value="%d{yy-MM-dd}T%d{HH:mm:ss.SSS};%.-1level;%X{USER};%X{CLIENT};%logger{48};%msg%n%ex"/>
+
+	<!-- Do not modify : creates a listener to propagate level changes made to a logback logger
+		 into the equivalent logger in j.u.l. -->
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+
+	<!-- The console appender configuration -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Interesting loggers you may want to add for debugging
+
+		** print SQL requests in console **
+
+		<logger name="org.hibernate.SQL" level="DEBUG">
+			<appender-ref ref="console"/>
+		</logger>
+
+	  -->
+
+	<logger name="org.hibernate.SQL" level="ERROR">
+		<appender-ref ref="console"/>
+	</logger>
+
+	<!-- Monitor logback configuration changes -->
+	<logger name="ch.qos.logback" level="INFO"/>
+
+	<root level="INFO">
+		<appender-ref ref="console"/>
+	</root>
+
+</configuration>
