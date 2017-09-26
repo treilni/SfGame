@@ -1,10 +1,11 @@
-package com.treil.render.geom;
+package com.treil.render.scene.mesh;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
+import com.treil.render.geom.Angle;
 
 /**
  * @author Nicolas
@@ -15,7 +16,7 @@ public class Hex extends Mesh {
         Vector3f[] vertices = new Vector3f[6];
         double angle = Angle.DEG_30;
         for (int i = 0; i < vertices.length; i++, angle += Angle.DEG_60) {
-            vertices[i] = new Vector3f(x + (float) (Math.cos(angle) * radius), -2, (float) (y + (Math.sin(angle) * radius)));
+            vertices[i] = new Vector3f(x + (float) (Math.cos(angle) * radius), 0, (float) (y + (Math.sin(angle) * radius)));
         }
 
         Vector2f[] texCoord = new Vector2f[vertices.length];

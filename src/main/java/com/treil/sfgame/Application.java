@@ -1,6 +1,7 @@
-package com.treil;
+package com.treil.sfgame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.treil.render.scene.MainScene;
 import com.treil.render.scene.Scene;
@@ -45,6 +46,7 @@ public class Application extends SimpleApplication {
 
     public void simpleInitApp() {
         scene.init(this);
+        cam.setLocation(new Vector3f(0, 2, 10));
     }
 
     /* Use the main event loop to trigger repeating actions. */

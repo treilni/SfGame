@@ -4,15 +4,14 @@ import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.sun.istack.internal.NotNull;
-import com.treil.render.geom.Hex;
-import com.treil.render.geom.HexBorder;
+import com.treil.render.scene.mesh.Hex;
+import com.treil.render.scene.mesh.HexBorder;
 
 /**
  * @author Nicolas
  * @since 25/09/2017.
  */
 public class HexTile {
-    private Hex hex;
     private Geometry tileGeom;
     private Geometry borderGeom;
 
@@ -22,7 +21,7 @@ public class HexTile {
         tileGeom = new Geometry("map", h);
         tileGeom.setMaterial(tileMaterial);
 
-        HexBorder hb = new HexBorder(x, y, radius, 5);
+        HexBorder hb = new HexBorder(x, y, radius, 3);
         borderGeom = new Geometry("map", hb);
         borderGeom.setMaterial(borderMaterial);
     }

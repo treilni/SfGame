@@ -1,10 +1,11 @@
-package com.treil.render.geom;
+package com.treil.render.scene.mesh;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
+import com.treil.render.geom.Angle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class HexBorder extends Mesh {
         List<Vector2f> texCoord = new ArrayList<>();
         double angle = Angle.DEG_30;
         float start = radius * (100f - borderSizePct) / 100f;
-        float height = -2 + heightOffset;
+        float height = heightOffset;
         for (int i = 0; i < 6; i++, angle += Angle.DEG_60) {
             vertices.add(new Vector3f(x + (float) (Math.cos(angle) * start), height, (float) (y + (Math.sin(angle) * start))));
             texCoord.add(new Vector2f(0, 0));

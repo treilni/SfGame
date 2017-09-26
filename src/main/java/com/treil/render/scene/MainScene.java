@@ -5,6 +5,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
+import com.treil.render.geom.Angle;
 import com.treil.render.scene.tile.HexTile;
 
 /**
@@ -12,16 +13,17 @@ import com.treil.render.scene.tile.HexTile;
  * @since 13/09/2017.
  */
 public class MainScene implements Scene {
-    protected Geometry map;
-
     public void init(SimpleApplication application) {
         AssetManager assetManager = application.getAssetManager();
 
         Material mat = getUnshadedMaterial(assetManager, ColorRGBA.Green);
         Material borderMat = getUnshadedMaterial(assetManager, ColorRGBA.Red);
-        HexTile tile = new HexTile(0, 0, 2, mat, borderMat);
-
-        tile.attachAsChild(application.getRootNode());
+        float radius = 2f;
+        float xStep = (float) (2 * radius * Math.cos(Angle.DEG_30));
+        for (int x = -1; x < 2; x++) {
+            HexTile tile = new HexTile(x * xStep, 0, 2, mat, borderMat);
+            tile.attachAsChild(application.getRootNode());
+        }
     }
 
     private Material getUnshadedMaterial(AssetManager assetManager, ColorRGBA color) {
