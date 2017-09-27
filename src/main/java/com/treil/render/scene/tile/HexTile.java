@@ -21,7 +21,7 @@ public class HexTile {
         tileGeom = new Geometry("map", h);
         tileGeom.setMaterial(tileMaterial);
 
-        HexBorder hb = new HexBorder(x, y, radius, 3);
+        HexBorder hb = new HexBorder(x, y, radius, 2);
         borderGeom = new Geometry("map", hb);
         borderGeom.setMaterial(borderMaterial);
     }

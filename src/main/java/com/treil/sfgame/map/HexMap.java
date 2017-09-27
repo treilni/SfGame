@@ -55,4 +55,12 @@ public class HexMap {
         }
         return getCellAt(row + direction.getRowOffset(), column + colOffset);
     }
+
+    public int getRowCount() {
+        return rows.size();
+    }
+
+    public int getColCount() {
+        return rows.size() > 0 ? rows.get(0).size() : 0;
+    }
 }

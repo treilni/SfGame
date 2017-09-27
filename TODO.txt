@@ -1,0 +1,15 @@
+RENDERING
+* Camera motion
+* Grass
+* Mutualize hex mesh
+* Trees
+* Water
+* Effects
+
+UI
+* Main UI
+
+GAMEPLAY
+* Save game
+* Units
+* AI

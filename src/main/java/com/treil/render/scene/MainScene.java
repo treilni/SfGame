@@ -4,33 +4,28 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.sun.istack.internal.NotNull;
 import com.treil.render.geom.Angle;
 import com.treil.render.scene.tile.HexTile;
+import com.treil.sfgame.map.HexMap;
+
+import java.util.List;
 
 /**
  * @author Nicolas
  * @since 13/09/2017.
  */
 public class MainScene implements Scene {
-    public void init(SimpleApplication application) {
+    public void init(SimpleApplication application, HexMap map) {
         AssetManager assetManager = application.getAssetManager();
 
-        Material mat = getUnshadedMaterial(assetManager, ColorRGBA.Green);
-        Material borderMat = getUnshadedMaterial(assetManager, ColorRGBA.Red);
-        float radius = 2f;
-        float xStep = (float) (2 * radius * Math.cos(Angle.DEG_30));
-        for (int x = -1; x < 2; x++) {
-            HexTile tile = new HexTile(x * xStep, 0, 2, mat, borderMat);
-            tile.attachAsChild(application.getRootNode());
-        }
+        MapRenderer renderer = new MapRenderer(assetManager, map);
+        attachTiles(renderer.getTiles(), application.getRootNode());
     }
 
-    private Material getUnshadedMaterial(AssetManager assetManager, ColorRGBA color) {
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", color);
-        return mat;
+    private void attachTiles(@NotNull List<HexTile> tiles, @NotNull Node rootNode) {
+        tiles.forEach(hexTile -> hexTile.attachAsChild(rootNode));
     }
 
     public void update(float tpf, SimpleApplication application) {
