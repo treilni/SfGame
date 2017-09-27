@@ -1,5 +1,5 @@
 RENDERING
-* Camera motion
+* Tilt camera
 * Grass
 * Trees
 * Water

@@ -1,8 +1,7 @@
 package com.treil.sfgame.map;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * @since 26/09/2017.
  */
 public class HexMap {
-    @NotNull
+    @Nonnull
     final private List<HexRow> rows = new ArrayList<>();
 
     public HexMap(final int rowCount, final int columns) {
@@ -33,7 +32,7 @@ public class HexMap {
     }
 
     @Nullable
-    public HexCell getSibling(@NotNull final HexCell cell, @NotNull final HexDirection direction) {
+    public HexCell getSibling(@Nonnull final HexCell cell, @Nonnull final HexDirection direction) {
         final int row = cell.getRow();
         final int column = cell.getColumn();
         int colOffset = 0;

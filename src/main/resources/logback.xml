@@ -7,7 +7,7 @@
 	<jmxConfigurator/>
 
 	<!-- Location of the files for non console logging -->
-	<property name="LOG_DIR" value="/usr/local/axigate/logfiles/release"/>
+	<property name="LOG_DIR" value="logs"/>
 	<!-- The pattern to use for logging -->
 	<property name="PATTERN" value="%d{yy-MM-dd}T%d{HH:mm:ss.SSS};%.-1level;%X{USER};%X{CLIENT};%logger{48};%msg%n%ex"/>
 
@@ -23,16 +23,6 @@
 			<pattern>${PATTERN}</pattern>
 		</encoder>
 	</appender>
-
-	<!-- Interesting loggers you may want to add for debugging
-
-		** print SQL requests in console **
-
-		<logger name="org.hibernate.SQL" level="DEBUG">
-			<appender-ref ref="console"/>
-		</logger>
-
-	  -->
 
 	<logger name="org.hibernate.SQL" level="ERROR">
 		<appender-ref ref="console"/>

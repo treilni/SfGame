@@ -2,14 +2,12 @@ package com.treil.render.scene;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.sun.istack.internal.NotNull;
-import com.treil.render.geom.Angle;
 import com.treil.render.scene.tile.HexTile;
 import com.treil.sfgame.map.HexMap;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -17,19 +15,28 @@ import java.util.List;
  * @since 13/09/2017.
  */
 public class MainScene implements Scene {
+    @Nonnull
+    private MapRenderer renderer;
+
     public void init(SimpleApplication application, HexMap map) {
         AssetManager assetManager = application.getAssetManager();
 
-        MapRenderer renderer = new MapRenderer(assetManager, map);
+        renderer = new MapRenderer(assetManager, map);
         attachTiles(renderer.getTiles(), application.getRootNode());
     }
 
-    private void attachTiles(@NotNull List<HexTile> tiles, @NotNull Node rootNode) {
+    private void attachTiles(@Nonnull List<HexTile> tiles, @Nonnull Node rootNode) {
         tiles.forEach(hexTile -> hexTile.attachAsChild(rootNode));
     }
 
-    public void update(float tpf, SimpleApplication application) {
+    public void update(float tpf, @Nonnull SimpleApplication application) {
         // make the player rotate:
         //map.rotate(0, tpf, 0);
+    }
+
+    @Override
+    @Nonnull
+    public Vector3f getExtent() {
+        return renderer.getExtent();
     }
 }

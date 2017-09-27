@@ -3,9 +3,10 @@ package com.treil.render.scene.tile;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.sun.istack.internal.NotNull;
 import com.treil.render.scene.mesh.Hex;
 import com.treil.render.scene.mesh.HexBorder;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Nicolas
@@ -18,7 +19,7 @@ public class HexTile {
     private Geometry borderGeom;
 
     public HexTile(float x, float y, float radius,
-                   @NotNull Material tileMaterial, @NotNull Material borderMaterial) {
+                   @Nonnull Material tileMaterial, @Nonnull Material borderMaterial) {
         tileGeom = new Geometry("map", tilePrimitive);
         tileGeom.setLocalTranslation(x, 0f, y);
         tileGeom.setLocalScale(radius);
@@ -30,7 +31,7 @@ public class HexTile {
         borderGeom.setMaterial(borderMaterial);
     }
 
-    public void attachAsChild(@NotNull Node node) {
+    public void attachAsChild(@Nonnull Node node) {
         node.attachChild(tileGeom);
         node.attachChild(borderGeom);
     }

@@ -1,10 +1,10 @@
 package com.treil.sfgame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.treil.render.scene.MainScene;
 import com.treil.render.scene.Scene;
+import com.treil.sfgame.controls.CamMovementController;
 import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.map.HexMap;
 import org.slf4j.Logger;
@@ -50,8 +50,10 @@ public class Application extends SimpleApplication {
     public void simpleInitApp() {
         HexMap map = new HexMap(6, 8);
         scene.init(this, map);
-        cam.setLocation(new Vector3f(0, 2, 10));
-        inputControler = new InputController(inputManager);
+        final CamMovementController camMovementController = new CamMovementController(cam);
+        camMovementController.center(scene);
+        flyCam.setEnabled(false);
+        inputControler = new InputController(inputManager, camMovementController);
     }
 
     /* Use the main event loop to trigger repeating actions. */

@@ -4,10 +4,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
-import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -85,7 +85,7 @@ public class TerrainMesh extends Mesh {
     private static class LineWithRepeatedBounds<T> {
         private T[] line;
 
-        private LineWithRepeatedBounds(@NotNull T[] buffer, int lineStart, int lineSize) {
+        private LineWithRepeatedBounds(@Nonnull T[] buffer, int lineStart, int lineSize) {
             line = (T[]) Array.newInstance(buffer[0].getClass(), lineSize + 2);
             line[0] = buffer[lineStart];
             System.arraycopy(buffer, lineStart, line, 1, lineSize);

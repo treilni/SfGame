@@ -3,11 +3,13 @@ package com.treil.render.scene;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.sun.istack.internal.NotNull;
+import com.jme3.math.Vector3f;
 import com.treil.render.geom.Angle;
+import com.treil.render.geom.HasExtent;
 import com.treil.render.scene.tile.HexTile;
 import com.treil.sfgame.map.HexMap;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +17,11 @@ import java.util.List;
  * @author Nicolas
  * @since 26/09/2017.
  */
-class MapRenderer {
+class MapRenderer implements HasExtent {
     private final AssetManager assetManager;
     private final HexMap map;
     private final List<HexTile> tiles = new ArrayList<>();
+    private static final float hexRadius = 1f;
 
     MapRenderer(AssetManager assetManager, HexMap map) {
         this.assetManager = assetManager;
@@ -27,8 +30,7 @@ class MapRenderer {
         Material firstMat = getUnshadedMaterial(assetManager, ColorRGBA.Cyan);
         Material tileMat = getUnshadedMaterial(assetManager, ColorRGBA.Green);
         Material borderMat = getUnshadedMaterial(assetManager, ColorRGBA.Red);
-        float radius = 1f;
-        final double smallRadius = radius * Math.cos(Angle.DEG_30);
+        final double smallRadius = hexRadius * Math.cos(Angle.DEG_30);
         float xStep = (float) (2 * smallRadius);
         float yStep = (float) (xStep * Math.sin(Angle.DEG_60));
 
@@ -39,7 +41,7 @@ class MapRenderer {
             float x = r % 2 == 0 ? 0 : xStep / 2.0f;
             for (int c = 0; c < colCount; c++, x += xStep) {
                 Material mat = r + c == 1 ? firstMat : tileMat;
-                tiles.add(new HexTile(x, y, radius, mat, borderMat));
+                tiles.add(new HexTile(x, y, hexRadius, mat, borderMat));
             }
         }
     }
@@ -51,8 +53,13 @@ class MapRenderer {
         return mat;
     }
 
-    @NotNull
+    @Nonnull
     List<HexTile> getTiles() {
         return tiles;
+    }
+
+    @Override
+    public Vector3f getExtent() {
+        return new Vector3f(hexRadius * map.getColCount(), 0f, hexRadius * map.getRowCount());
     }
 }
