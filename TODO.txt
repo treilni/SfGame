@@ -4,6 +4,7 @@ RENDERING
 * Trees
 * Water
 * Effects
+* Import model from Blender
 
 UI
 * Main UI

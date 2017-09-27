@@ -51,7 +51,8 @@ public class Application extends SimpleApplication {
         HexMap map = new HexMap(6, 8);
         scene.init(this, map);
         final CamMovementController camMovementController = new CamMovementController(cam);
-        camMovementController.center(scene);
+        camMovementController.setExtent(scene.getExtent());
+        camMovementController.center();
         flyCam.setEnabled(false);
         inputControler = new InputController(inputManager, camMovementController);
     }

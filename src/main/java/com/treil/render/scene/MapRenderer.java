@@ -60,6 +60,9 @@ class MapRenderer implements HasExtent {
 
     @Override
     public Vector3f getExtent() {
-        return new Vector3f(hexRadius * map.getColCount(), 0f, hexRadius * map.getRowCount());
+        final double smallRadius = hexRadius * Math.cos(Angle.DEG_30);
+        float xStep = (float) (2 * smallRadius);
+        float yStep = (float) (xStep * Math.sin(Angle.DEG_60));
+        return new Vector3f(xStep * map.getColCount(), 0f, yStep * map.getRowCount());
     }
 }
