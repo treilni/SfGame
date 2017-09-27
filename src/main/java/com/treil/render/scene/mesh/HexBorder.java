@@ -15,7 +15,7 @@ import java.util.List;
  * @since 25/09/2017.
  */
 public class HexBorder extends Mesh {
-    private static final float heightOffset = 0.001f;
+    private static final float heightOffset = 0.00001f;
 
     public HexBorder(float x, float y, float radius, float borderSizePct) {
         List<Vector3f> vertices = new ArrayList<>();

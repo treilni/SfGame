@@ -1,7 +1,6 @@
 RENDERING
 * Camera motion
 * Grass
-* Mutualize hex mesh
 * Trees
 * Water
 * Effects

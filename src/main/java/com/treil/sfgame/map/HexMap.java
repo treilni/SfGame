@@ -26,7 +26,7 @@ public class HexMap {
         if (row >= 0 && row < rows.size()) {
             HexRow cells = rows.get(row);
             if (column >= 0 && column < cells.size()) {
-                cells.get(column);
+                return cells.get(column);
             }
         }
         return null;

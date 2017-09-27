@@ -12,17 +12,21 @@ import com.treil.render.scene.mesh.HexBorder;
  * @since 25/09/2017.
  */
 public class HexTile {
+    private static final Hex tilePrimitive = new Hex(0f, 0f, 1f);
+    private static final HexBorder borderPrimitive = new HexBorder(0f, 0f, 1f, 2f);
     private Geometry tileGeom;
     private Geometry borderGeom;
 
     public HexTile(float x, float y, float radius,
                    @NotNull Material tileMaterial, @NotNull Material borderMaterial) {
-        Hex h = new Hex(x, y, radius);
-        tileGeom = new Geometry("map", h);
+        tileGeom = new Geometry("map", tilePrimitive);
+        tileGeom.setLocalTranslation(x, 0f, y);
+        tileGeom.setLocalScale(radius);
         tileGeom.setMaterial(tileMaterial);
 
-        HexBorder hb = new HexBorder(x, y, radius, 2);
-        borderGeom = new Geometry("map", hb);
+        borderGeom = new Geometry("map", borderPrimitive);
+        borderGeom.setLocalTranslation(x, 0f, y);
+        borderGeom.setLocalScale(radius);
         borderGeom.setMaterial(borderMaterial);
     }
 

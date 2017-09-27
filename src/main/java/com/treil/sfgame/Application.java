@@ -5,7 +5,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.treil.render.scene.MainScene;
 import com.treil.render.scene.Scene;
-import com.treil.sfgame.controls.InputControler;
+import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.map.HexMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Application extends SimpleApplication {
-    public static Logger logger = LoggerFactory.getLogger(Application.class);
+    public static final Logger logger = LoggerFactory.getLogger(Application.class);
     Scene scene = new MainScene();
-    private InputControler inputControler;
+    private InputController inputControler;
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
@@ -51,7 +51,7 @@ public class Application extends SimpleApplication {
         HexMap map = new HexMap(6, 8);
         scene.init(this, map);
         cam.setLocation(new Vector3f(0, 2, 10));
-        inputControler = new InputControler(inputManager);
+        inputControler = new InputController(inputManager);
     }
 
     /* Use the main event loop to trigger repeating actions. */

@@ -82,7 +82,7 @@ public class TerrainMesh extends Mesh {
     /**
      * a class to allow to access index -1 and lineLength of a line of data
      */
-    private class LineWithRepeatedBounds<T> {
+    private static class LineWithRepeatedBounds<T> {
         private T[] line;
 
         private LineWithRepeatedBounds(@NotNull T[] buffer, int lineStart, int lineSize) {
