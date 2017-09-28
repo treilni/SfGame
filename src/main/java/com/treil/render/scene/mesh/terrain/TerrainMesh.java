@@ -1,4 +1,4 @@
-package com.treil.render.scene.mesh;
+package com.treil.render.scene.mesh.terrain;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;

@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
  * @author Nicolas
  * @since 25/09/2017.
  */
-public class HexTile {
+public class HexTile extends Node {
     private static final Hex tilePrimitive = new Hex(0f, 0f, 1f);
     private static final HexBorder borderPrimitive = new HexBorder(0f, 0f, 1f, 2f);
     private Geometry tileGeom;
@@ -21,18 +21,14 @@ public class HexTile {
     public HexTile(float x, float y, float radius,
                    @Nonnull Material tileMaterial, @Nonnull Material borderMaterial) {
         tileGeom = new Geometry("map", tilePrimitive);
-        tileGeom.setLocalTranslation(x, 0f, y);
-        tileGeom.setLocalScale(radius);
         tileGeom.setMaterial(tileMaterial);
 
         borderGeom = new Geometry("map", borderPrimitive);
-        borderGeom.setLocalTranslation(x, 0f, y);
-        borderGeom.setLocalScale(radius);
         borderGeom.setMaterial(borderMaterial);
-    }
 
-    public void attachAsChild(@Nonnull Node node) {
-        node.attachChild(tileGeom);
-        node.attachChild(borderGeom);
+        attachChild(tileGeom);
+        attachChild(borderGeom);
+        setLocalTranslation(x, 0f, y);
+        setLocalScale(radius);
     }
 }

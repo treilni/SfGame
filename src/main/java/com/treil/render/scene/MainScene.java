@@ -15,7 +15,6 @@ import java.util.List;
  * @since 13/09/2017.
  */
 public class MainScene implements Scene {
-    @Nonnull
     private MapRenderer renderer;
 
     public void init(SimpleApplication application, HexMap map) {
@@ -26,7 +25,7 @@ public class MainScene implements Scene {
     }
 
     private void attachTiles(@Nonnull List<HexTile> tiles, @Nonnull Node rootNode) {
-        tiles.forEach(hexTile -> hexTile.attachAsChild(rootNode));
+        tiles.forEach(rootNode::attachChild);
     }
 
     public void update(float tpf, @Nonnull SimpleApplication application) {

@@ -1,4 +1,4 @@
-package com.treil.render.scene.mesh;
+package com.treil.render.scene.mesh.terrain;
 
 import com.flowpowered.noise.Noise;
 import com.flowpowered.noise.NoiseQuality;
