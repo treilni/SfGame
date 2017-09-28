@@ -7,6 +7,7 @@ import com.treil.render.scene.Scene;
 import com.treil.sfgame.controls.CamMovementController;
 import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.map.HexMap;
+import com.treil.sfgame.map.SimpleMapGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -48,7 +49,7 @@ public class Application extends SimpleApplication {
     }
 
     public void simpleInitApp() {
-        HexMap map = new HexMap(6, 8);
+        HexMap map = new HexMap(6, 8, new SimpleMapGenerator());
         scene.init(this, map);
         final CamMovementController camMovementController = new CamMovementController(cam);
         camMovementController.setExtent(scene.getExtent());

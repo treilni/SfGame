@@ -1,5 +1,6 @@
 package com.treil.sfgame.map;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 /**
@@ -7,9 +8,9 @@ import java.util.ArrayList;
  * @since 26/09/2017.
  */
 public class HexRow extends ArrayList<HexCell> {
-    public HexRow(int rowNum, int columns) {
+    public HexRow(int rowNum, int columns, @Nonnull MapGenerator mapGenerator) {
         for (int c = 0; c < columns; c++) {
-            add(new HexCell(rowNum, c));
+            add(new HexCell(rowNum, c, mapGenerator));
         }
     }
 }

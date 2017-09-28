@@ -7,7 +7,9 @@ import com.jme3.math.Vector3f;
 import com.treil.render.geom.Angle;
 import com.treil.render.geom.HasExtent;
 import com.treil.render.scene.tile.HexTile;
+import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexMap;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -18,17 +20,19 @@ import java.util.List;
  * @since 26/09/2017.
  */
 class MapRenderer implements HasExtent {
-    private final AssetManager assetManager;
-    private final HexMap map;
-    private final List<HexTile> tiles = new ArrayList<>();
     private static final float hexRadius = 1f;
 
-    MapRenderer(AssetManager assetManager, HexMap map) {
+    @Nonnull
+    private final AssetManager assetManager;
+    @Nonnull
+    private final HexMap map;
+    @Nonnull
+    private final List<HexTile> tiles = new ArrayList<>();
+
+    MapRenderer(@Nonnull AssetManager assetManager, @Nonnull HexMap map) {
         this.assetManager = assetManager;
         this.map = map;
 
-        Material firstMat = getUnshadedMaterial(assetManager, ColorRGBA.Cyan);
-        Material tileMat = getUnshadedMaterial(assetManager, ColorRGBA.Green);
         Material borderMat = getUnshadedMaterial(assetManager, ColorRGBA.Red);
         final double smallRadius = hexRadius * Math.cos(Angle.DEG_30);
         float xStep = (float) (2 * smallRadius);
@@ -40,10 +44,34 @@ class MapRenderer implements HasExtent {
         for (int r = 0; r < rowCount; r++, y += yStep) {
             float x = r % 2 == 0 ? 0 : xStep / 2.0f;
             for (int c = 0; c < colCount; c++, x += xStep) {
-                Material mat = r + c == 1 ? firstMat : tileMat;
-                tiles.add(new HexTile(x, y, hexRadius, mat, borderMat));
+                Material tileMat = getTileMat(assetManager, map.getCellAt(r, c));
+                final HexTile tile = new HexTile(x, y, hexRadius, tileMat, borderMat);
+
+                tiles.add(tile);
             }
         }
+    }
+
+    private Material getTileMat(AssetManager assetManager, HexCell cell) {
+        final ColorRGBA color;
+        switch (cell.getTerrain()) {
+            case GRASS:
+                color = ColorRGBA.Green;
+                break;
+            case DIRT:
+                color = ColorRGBA.Brown;
+                break;
+            case WATER:
+                color = ColorRGBA.Cyan;
+                break;
+            case FOREST:
+                color = ColorRGBA.Green.interpolateLocal(ColorRGBA.DarkGray, 0.3f);
+                break;
+            default:
+                color = ColorRGBA.Red;
+                break;
+        }
+        return getUnshadedMaterial(assetManager, color);
     }
 
     private Material getUnshadedMaterial(AssetManager assetManager, ColorRGBA color) {
@@ -58,6 +86,7 @@ class MapRenderer implements HasExtent {
         return tiles;
     }
 
+    @NotNull
     @Override
     public Vector3f getExtent() {
         final double smallRadius = hexRadius * Math.cos(Angle.DEG_30);

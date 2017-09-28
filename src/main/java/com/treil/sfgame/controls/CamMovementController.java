@@ -26,7 +26,8 @@ public class CamMovementController {
     }
 
     public void center() {
-        camera.setLocation(new Vector3f(extent.getX(), 2, 10));
+        final Vector3f location = new Vector3f(extent.getX() / 2, 2, extent.getZ() / 2 + 10f);
+        camera.setLocation(constrainLocation(location));
     }
 
     void moveRight(float value, float tpf) {
@@ -55,6 +56,10 @@ public class CamMovementController {
         float maxX = extent.getX() - minX;
         float minZ = -extent.getZ() * extentOvershootPct / 100;
         float maxZ = extent.getZ() - minZ;
+        minZ += 5f;
+        maxZ += 5f;
+
+        System.err.println(String.format("z = %f, [%f - %f]", location.getZ(), minZ, maxZ));
 
         float x = location.getX();
         if (x < minX) {
