@@ -1,5 +1,6 @@
 package com.treil.sfgame.controls;
 
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class CamMovementController {
 
     public void center() {
         final Vector3f location = new Vector3f(extent.getX() / 2, 2, extent.getZ() / 2 + 10f);
+        final Quaternion rotation = camera.getRotation();
+        rotation.set(0f, 1f, -0.2f, 0f);
+        camera.setRotation(rotation);
         camera.setLocation(constrainLocation(location));
     }
 
@@ -58,8 +62,6 @@ public class CamMovementController {
         float maxZ = extent.getZ() - minZ;
         minZ += 5f;
         maxZ += 5f;
-
-        System.err.println(String.format("z = %f, [%f - %f]", location.getZ(), minZ, maxZ));
 
         float x = location.getX();
         if (x < minX) {

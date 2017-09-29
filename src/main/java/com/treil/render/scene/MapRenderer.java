@@ -23,20 +23,18 @@ class MapRenderer implements HasExtent {
     private static final float hexRadius = 1f;
 
     @Nonnull
-    private final AssetManager assetManager;
-    @Nonnull
     private final HexMap map;
     @Nonnull
     private final List<HexTile> tiles = new ArrayList<>();
 
     MapRenderer(@Nonnull AssetManager assetManager, @Nonnull HexMap map) {
-        this.assetManager = assetManager;
         this.map = map;
 
         Material borderMat = getUnshadedMaterial(assetManager, ColorRGBA.Red);
         final double smallRadius = hexRadius * Math.cos(Angle.DEG_30);
         float xStep = (float) (2 * smallRadius);
         float yStep = (float) (xStep * Math.sin(Angle.DEG_60));
+        DecorationManager decorationManager = new DecorationManager(assetManager);
 
         int rowCount = map.getRowCount();
         int colCount = map.getColCount();
@@ -44,10 +42,13 @@ class MapRenderer implements HasExtent {
         for (int r = 0; r < rowCount; r++, y += yStep) {
             float x = r % 2 == 0 ? 0 : xStep / 2.0f;
             for (int c = 0; c < colCount; c++, x += xStep) {
-                Material tileMat = getTileMat(assetManager, map.getCellAt(r, c));
-                final HexTile tile = new HexTile(x, y, hexRadius, tileMat, borderMat);
-
-                tiles.add(tile);
+                final HexCell cell = map.getCellAt(r, c);
+                if (cell != null) {
+                    Material tileMat = getTileMat(assetManager, cell);
+                    final HexTile tile = new HexTile(x, y, hexRadius, tileMat, borderMat);
+                    tile.addDecorations(decorationManager, cell.getTerrain());
+                    tiles.add(tile);
+                }
             }
         }
     }
@@ -56,7 +57,7 @@ class MapRenderer implements HasExtent {
         final ColorRGBA color;
         switch (cell.getTerrain()) {
             case GRASS:
-                color = ColorRGBA.Green;
+                color = new ColorRGBA(ColorRGBA.Green).interpolateLocal(ColorRGBA.DarkGray, 0.25f);
                 break;
             case DIRT:
                 color = ColorRGBA.Brown;

@@ -49,7 +49,7 @@ public class Application extends SimpleApplication {
     }
 
     public void simpleInitApp() {
-        HexMap map = new HexMap(6, 8, new SimpleMapGenerator());
+        HexMap map = new HexMap(20, 40, new SimpleMapGenerator());
         scene.init(this, map);
         final CamMovementController camMovementController = new CamMovementController(cam);
         camMovementController.setExtent(scene.getExtent());
