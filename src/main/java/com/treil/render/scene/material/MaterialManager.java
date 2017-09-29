@@ -13,8 +13,8 @@ public class MaterialManager {
 
     public MaterialManager(AssetManager assetManager) {
         this.assetManager = assetManager;
-        lowPolyMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        lowPolyMaterial.setTexture("ColorMap", assetManager.loadTexture("lowpoly/lowpoly-texture.jpg"));
+        lowPolyMaterial = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        lowPolyMaterial.setTexture("DiffuseMap", assetManager.loadTexture("lowpoly/lowpoly-texture.jpg"));
     }
 
     public Material getLowPolyMaterial() {
