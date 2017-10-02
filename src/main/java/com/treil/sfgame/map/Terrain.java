@@ -5,5 +5,5 @@ package com.treil.sfgame.map;
  * @since 28/09/2017.
  */
 public enum Terrain {
-    GRASS, DIRT, WATER, FOREST
+    GRASS, DIRT, WATER, SAND, FOREST
 }

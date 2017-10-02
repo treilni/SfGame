@@ -14,10 +14,12 @@ public class BlendMap {
     private final int seed;
     private final int xExtent;
     private final int zExtent;
-    private double frequency = 0.3d;
+    private static final double DefaultFrequency = 0.3d;
+    private double frequency = DefaultFrequency;
     private double sigmoidCoef = 1.0d;
 
-    public BlendMap(int xExtent, int zExtent, int seed) {
+    public BlendMap(int xExtent, int zExtent, int seed, double frequency) {
+        this.frequency = frequency;
         this.xExtent = xExtent;
         this.zExtent = zExtent;
         this.seed = seed;
@@ -28,6 +30,10 @@ public class BlendMap {
                 values[z][x] = getValue(x, z);
             }
         }
+    }
+
+    public BlendMap(int xExtent, int zExtent, int seed) {
+        this(xExtent, zExtent, seed, DefaultFrequency);
     }
 
     private double getValue(int x, int z) {

@@ -21,6 +21,9 @@ import java.util.List;
  */
 class MapRenderer implements HasExtent {
     private static final float hexRadius = 1f;
+    private static final ColorRGBA grassColor = new ColorRGBA(ColorRGBA.Green).interpolateLocal(ColorRGBA.DarkGray, 0.25f);
+    private static final ColorRGBA sandColor = new ColorRGBA(ColorRGBA.Yellow).interpolateLocal(ColorRGBA.White, 0.25f);
+    private static final ColorRGBA forestColor = new ColorRGBA(ColorRGBA.Green).interpolateLocal(ColorRGBA.DarkGray, 0.4f);
 
     @Nonnull
     private final HexMap map;
@@ -57,16 +60,19 @@ class MapRenderer implements HasExtent {
         final ColorRGBA color;
         switch (cell.getTerrain()) {
             case GRASS:
-                color = new ColorRGBA(ColorRGBA.Green).interpolateLocal(ColorRGBA.DarkGray, 0.25f);
+                color = grassColor;
                 break;
             case DIRT:
                 color = ColorRGBA.Brown;
+                break;
+            case SAND:
+                color = sandColor;
                 break;
             case WATER:
                 color = ColorRGBA.Cyan;
                 break;
             case FOREST:
-                color = ColorRGBA.Green.interpolateLocal(ColorRGBA.DarkGray, 0.3f);
+                color = forestColor;
                 break;
             default:
                 color = ColorRGBA.Red;

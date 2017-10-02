@@ -7,6 +7,7 @@ import com.treil.render.scene.Scene;
 import com.treil.sfgame.controls.CamMovementController;
 import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.map.HexMap;
+import com.treil.sfgame.map.RandomMapGenerator;
 import com.treil.sfgame.map.SimpleMapGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +50,12 @@ public class Application extends SimpleApplication {
     }
 
     public void simpleInitApp() {
-        HexMap map = new HexMap(20, 40, new SimpleMapGenerator());
+        HexMap map = new HexMap(20, 40, new RandomMapGenerator());
         scene.init(this, map);
         final CamMovementController camMovementController = new CamMovementController(cam);
         camMovementController.setExtent(scene.getExtent());
         camMovementController.center();
-        flyCam.setEnabled(false);
+        flyCam.setDragToRotate(true);
         inputControler = new InputController(inputManager, camMovementController);
     }
 
