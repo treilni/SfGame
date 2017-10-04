@@ -5,6 +5,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class InputController {
 
         private static Map<String, Action> map = null;
 
-        @Nullable
+        @Nonnull
         static Action forName(@Nullable String name) {
             if (map == null) {
                 map = new HashMap<>();
@@ -35,6 +36,7 @@ public class InputController {
             return action != null ? action : NONE;
         }
 
+        @Nonnull
         public static String[] names() {
             return Arrays.stream(values()).map(Enum::name).collect(Collectors.toList()).toArray(new String[0]);
         }

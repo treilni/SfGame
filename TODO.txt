@@ -1,15 +1,19 @@
 RENDERING
-* Tilt camera
 * Grass
 * Trees
 * Water
 * Effects
 * Import model from Blender
+* Ants
+* Beetles
+* Spiders
 
 UI
 * Main UI
+* Save game
 
 GAMEPLAY
-* Save game
 * Units
+* Movement and movement range
 * AI
+

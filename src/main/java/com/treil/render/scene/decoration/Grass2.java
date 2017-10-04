@@ -6,8 +6,8 @@ import com.treil.render.scene.material.MaterialManager;
  * @author Nicolas
  * @since 28/09/2017.
  */
-public class Log extends Decoration {
-    public Log(MaterialManager materialManager) {
-        super(materialManager, "lowpoly/log1_1.obj", 0.25f);
+public class Grass2 extends Decoration {
+    public Grass2(MaterialManager materialManager) {
+        super(materialManager, "lowpoly/grass2_1.obj", 0.1f);
     }
 }
