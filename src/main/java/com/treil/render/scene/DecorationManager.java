@@ -7,6 +7,8 @@ import com.jme3.scene.Spatial;
 import com.treil.render.geom.Angle;
 import com.treil.render.scene.decoration.*;
 import com.treil.render.scene.material.MaterialManager;
+import com.treil.render.scene.units.Ant;
+import com.treil.render.scene.units.Unit;
 import com.treil.sfgame.map.Terrain;
 
 import javax.annotation.Nonnull;
@@ -63,6 +65,10 @@ public class DecorationManager {
             randomRotateAroundY(tree);
             tree.setLocalTranslation(randomCoordFromCenter(), 0f, randomCoordFromCenter());
             result.add(tree);
+        } else if (terrain == Terrain.WATER) {
+            final Unit ant = new Ant(materialManager.getAssetManager());
+            randomRotateAroundY(ant);
+            result.add(ant);
         }
         return result;
     }

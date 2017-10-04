@@ -2,10 +2,13 @@ package com.treil.sfgame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
+import com.simsilica.lemur.GuiGlobals;
+import com.simsilica.lemur.style.BaseStyles;
 import com.treil.render.scene.MainScene;
 import com.treil.render.scene.Scene;
 import com.treil.sfgame.controls.CamMovementController;
 import com.treil.sfgame.controls.InputController;
+import com.treil.sfgame.gui.GuiManager;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.RandomMapGenerator;
 import org.slf4j.Logger;
@@ -58,6 +61,11 @@ public class Application extends SimpleApplication {
         camMovementController.center();
         flyCam.setDragToRotate(true);
         InputController inputControler = new InputController(inputManager, camMovementController);
+        logger.info("Initialized " + inputControler);
+        GuiGlobals.initialize(this);
+        BaseStyles.loadGlassStyle();
+        GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
+        GuiManager guiManager = new GuiManager(guiNode);
     }
 
     /* Use the main event loop to trigger repeating actions. */

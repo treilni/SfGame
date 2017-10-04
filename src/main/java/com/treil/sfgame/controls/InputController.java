@@ -84,4 +84,12 @@ public class InputController {
     private void addKeyMapping(Action action, int key) {
         inputManager.addMapping(action.name(), new KeyTrigger(key));
     }
+
+    @Override
+    public String toString() {
+        return "InputController{" +
+                "inputManager=" + inputManager +
+                ", camMovementController=" + camMovementController +
+                '}';
+    }
 }
