@@ -58,20 +58,16 @@ public class InputController {
         AnalogListener analogListener = (name, value, tpf) -> {
             switch (Action.forName(name)) {
                 case LEFT:
-                    camMovementController.moveLeft(value, tpf);
                     break;
                 case RIGHT:
-                    camMovementController.moveRight(value, tpf);
                     break;
                 case UP:
                     break;
                 case DOWN:
                     break;
                 case FORWARD:
-                    camMovementController.moveForward(value, tpf);
                     break;
                 case BACKWARD:
-                    camMovementController.moveBackward(value, tpf);
                     break;
                 case NONE:
                     break;

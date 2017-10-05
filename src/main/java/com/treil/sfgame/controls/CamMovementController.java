@@ -1,5 +1,11 @@
 package com.treil.sfgame.controls;
 
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
+import com.jme3.input.FlyByCamera;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -18,12 +24,48 @@ public class CamMovementController {
     private static final float movementSpeed = 4.0f;
 
     @Nonnull
+    private FlyByCamera flyByCamera;
+    @Nonnull
     private Camera camera;
     @Nonnull
     private Vector3f extent = new Vector3f();
 
-    public CamMovementController(@Nonnull Camera camera) {
+    public CamMovementController(@Nonnull FlyByCamera flyByCamera, Camera camera, AppStateManager stateManager, InputManager inputManager) {
+        this.flyByCamera = flyByCamera;
         this.camera = camera;
+        flyByCamera.setMoveSpeed(10f);
+        flyByCamera.setRotationSpeed(6f);
+        flyByCamera.setZoomSpeed(20.0f);
+        flyByCamera.setDragToRotate(true);
+
+        stateManager.attach(new AbstractAppState() {
+            @Override
+            public void initialize(AppStateManager stateManager, com.jme3.app.Application app) {
+                super.initialize(stateManager, app);
+                redefineKeys(inputManager);
+                stateManager.detach(this);
+            }
+        });
+
+//        flyByCamera.setMotionAllowedListener((position, velocity) -> {
+//            constrainLocation(position);
+//            velocity.setY(0f);
+//        });
+    }
+
+    private void redefineKeys(InputManager inputManager) {
+        inputManager.deleteMapping("FLYCAM_Forward");
+        inputManager.deleteMapping("FLYCAM_Backward");
+        inputManager.deleteMapping("FLYCAM_Rise");
+        inputManager.deleteMapping("FLYCAM_Lower");
+        inputManager.deleteMapping("FLYCAM_StrafeLeft");
+        inputManager.deleteMapping("FLYCAM_StrafeRight");
+        inputManager.addMapping("FLYCAM_Forward", new KeyTrigger(KeyInput.KEY_Z));
+        inputManager.addMapping("FLYCAM_Backward", new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping("FLYCAM_StrafeLeft", new KeyTrigger(KeyInput.KEY_Q));
+        inputManager.addMapping("FLYCAM_StrafeRight", new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addListener(flyByCamera,
+                "FLYCAM_Forward", "FLYCAM_Backward", "FLYCAM_StrafeLeft", "FLYCAM_StrafeRight");
     }
 
     public void center() {
@@ -32,26 +74,6 @@ public class CamMovementController {
         rotation.set(0f, 1f, -0.2f, 0f);
         camera.setRotation(rotation);
         camera.setLocation(constrainLocation(location));
-    }
-
-    void moveRight(float value, float tpf) {
-        Vector3f location = camera.getLocation().add(movementSpeed * value, 0f, 0f);
-        location = constrainLocation(location);
-        camera.setLocation(location);
-    }
-
-    void moveLeft(float value, float tpf) {
-        moveRight(-value, tpf);
-    }
-
-    void moveForward(float value, float tpf) {
-        moveBackward(-value, tpf);
-    }
-
-    void moveBackward(float value, float tpf) {
-        Vector3f location = camera.getLocation().add(0f, 0f, movementSpeed * value);
-        location = constrainLocation(location);
-        camera.setLocation(location);
     }
 
     @Nonnull

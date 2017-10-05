@@ -4,10 +4,10 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
+import com.treil.render.geom.Size2D;
 import com.treil.render.scene.MainScene;
 import com.treil.render.scene.Scene;
 import com.treil.sfgame.controls.CamMovementController;
-import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.gui.GuiManager;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.RandomMapGenerator;
@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Nicolas
@@ -37,6 +39,8 @@ public class Application extends SimpleApplication {
         AppSettings settings = getAppSettings();
         setSettings(settings);
         setShowSettings(false);
+        // setDisplayFps(false); // to hide the FPS
+        setDisplayStatView(false);
 
         super.start();
         logger.info("Application started");
@@ -56,21 +60,29 @@ public class Application extends SimpleApplication {
         rootNode.updateModelBound();
         rootNode.updateGeometricState();
 
-        final CamMovementController camMovementController = new CamMovementController(cam);
+        final CamMovementController camMovementController = new CamMovementController(flyCam, cam, stateManager, inputManager);
         camMovementController.setExtent(scene.getExtent());
         camMovementController.center();
-        flyCam.setDragToRotate(true);
-        InputController inputControler = new InputController(inputManager, camMovementController);
-        logger.info("Initialized " + inputControler);
+        //InputController inputControler = new InputController(inputManager, camMovementController);
+        //logger.info("Initialized " + inputControler);
+
+
         GuiGlobals.initialize(this);
         BaseStyles.loadGlassStyle();
         GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
-        GuiManager guiManager = new GuiManager(guiNode);
+        GuiManager guiManager = new GuiManager(guiNode, getSize());
+        logger.info("Initialized " + guiManager);
     }
 
     /* Use the main event loop to trigger repeating actions. */
     @Override
     public void simpleUpdate(float tpf) {
         scene.update(tpf, this);
+    }
+
+    @Nonnull
+    public Size2D getSize() {
+        final AppSettings appSettings = getAppSettings();
+        return new Size2D(appSettings.getWidth(), appSettings.getHeight());
     }
 }
