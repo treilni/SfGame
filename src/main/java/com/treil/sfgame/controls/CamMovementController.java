@@ -20,8 +20,10 @@ import javax.annotation.Nonnull;
  */
 public class CamMovementController {
     public static final Logger logger = LoggerFactory.getLogger(CamMovementController.class);
-    private static final int extentOvershootPct = 5;
-    private static final float movementSpeed = 4.0f;
+    private static final int EXTENT_OVERSHOOT_PCT = 5;
+    private static final float MOVEMENT_SPEED = 10.0f;
+    private static final float ROTATION_SPEED = 6f;
+    private static final float ZOOM_SPEED = 20.0f;
 
     @Nonnull
     private FlyByCamera flyByCamera;
@@ -33,9 +35,9 @@ public class CamMovementController {
     public CamMovementController(@Nonnull FlyByCamera flyByCamera, Camera camera, AppStateManager stateManager, InputManager inputManager) {
         this.flyByCamera = flyByCamera;
         this.camera = camera;
-        flyByCamera.setMoveSpeed(10f);
-        flyByCamera.setRotationSpeed(6f);
-        flyByCamera.setZoomSpeed(20.0f);
+        flyByCamera.setMoveSpeed(MOVEMENT_SPEED);
+        flyByCamera.setRotationSpeed(ROTATION_SPEED);
+        flyByCamera.setZoomSpeed(ZOOM_SPEED);
         flyByCamera.setDragToRotate(true);
 
         stateManager.attach(new AbstractAppState() {
@@ -78,9 +80,9 @@ public class CamMovementController {
 
     @Nonnull
     private Vector3f constrainLocation(@Nonnull Vector3f location) {
-        float minX = -extent.getX() * extentOvershootPct / 100;
+        float minX = -extent.getX() * EXTENT_OVERSHOOT_PCT / 100;
         float maxX = extent.getX() - minX;
-        float minZ = -extent.getZ() * extentOvershootPct / 100;
+        float minZ = -extent.getZ() * EXTENT_OVERSHOOT_PCT / 100;
         float maxZ = extent.getZ() - minZ;
         minZ += 5f;
         maxZ += 5f;

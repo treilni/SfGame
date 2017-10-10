@@ -1,10 +1,12 @@
 package com.treil.render.geom;
 
 /**
+ * Immutable size object
+ *
  * @author Nicolas
  * @since 05/10/2017.
  */
-public class Size2D {
+public class Size2D implements Cloneable {
     private int width;
     private int height;
 
@@ -17,15 +19,7 @@ public class Size2D {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public int getHeight() {
         return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 }

@@ -3,6 +3,7 @@ package com.treil.render.scene.tile;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.treil.render.scene.DecorationManager;
 import com.treil.render.scene.mesh.Hex;
 import com.treil.render.scene.mesh.HexBorder;
@@ -29,13 +30,13 @@ public class HexTile extends Node {
 
         attachChild(tileGeom);
         attachChild(borderGeom);
-        setLocalTranslation(x, 0f, y);
-        setLocalScale(radius);
+        move(x, 0f, y);
+        scale(radius);
     }
 
     @Nonnull
     public void addDecorations(@Nonnull DecorationManager decorationManager, @Nonnull Terrain terrain) {
-        List<Node> decorations = decorationManager.getDecorations(terrain);
+        List<Spatial> decorations = decorationManager.getDecorations(terrain);
         decorations.forEach(this::attachChild);
     }
 }
