@@ -21,12 +21,13 @@ import java.util.Random;
  */
 public class DecorationManager {
     private static final int MushroomPercent = 5;
+    private static final int FlowerPercent = 5;
     private static final int LogPercent = 3;
     private static final int GrassPercent = 50;
     private static final int GrassMax = 4;
 
     enum Asset {
-        GRASS1, GRASS2, LOG, MUSHROOM, PINE, ANT
+        GRASS1, GRASS2, LOG, MUSHROOM1, MUSHROOM2, FLOWER1, FLOWER2, FLOWER3, FLOWER4, PINE, ANT
     }
 
     @Nonnull
@@ -44,10 +45,15 @@ public class DecorationManager {
         List<Spatial> result = new ArrayList<>();
         if (terrain == Terrain.GRASS) {
             if (random.nextInt(100) < MushroomPercent) {
-                final Spatial mushroom = getAssetSpatial(Asset.MUSHROOM);
+                final Spatial mushroom = getAssetSpatial(getRandomAsset(Asset.MUSHROOM1, Asset.MUSHROOM2));
                 randomRotateAroundY(mushroom);
                 mushroom.move(randomCoordFromCenter(), 0f, randomCoordFromCenter());
                 result.add(mushroom);
+            } else if (random.nextInt(100) < FlowerPercent) {
+                final Spatial flower = getAssetSpatial(getRandomAsset(Asset.FLOWER1, Asset.FLOWER2, Asset.FLOWER3, Asset.FLOWER4));
+                randomRotateAroundY(flower);
+                flower.move(randomCoordFromCenter(), 0f, randomCoordFromCenter());
+                result.add(flower);
             } else if (random.nextInt(100) < LogPercent) {
                 final Spatial log = getAssetSpatial(Asset.LOG);
                 randomRotateAroundY(log);
@@ -77,6 +83,10 @@ public class DecorationManager {
         return result;
     }
 
+    private Asset getRandomAsset(Asset... assets) {
+        return assets[random.nextInt(assets.length)];
+    }
+
     private Spatial getAssetSpatial(Asset asset) {
         switch (asset) {
             case GRASS1:
@@ -85,14 +95,24 @@ public class DecorationManager {
                 return new Grass2(materialManager);
             case LOG:
                 return new Log(materialManager);
-            case MUSHROOM:
-                return new Mushroom(materialManager);
+            case MUSHROOM1:
+                return new Mushroom1(materialManager);
+            case MUSHROOM2:
+                return new Mushroom2(materialManager);
+            case FLOWER1:
+                return new Flower1(materialManager);
+            case FLOWER2:
+                return new Flower2(materialManager);
+            case FLOWER3:
+                return new Flower3(materialManager);
+            case FLOWER4:
+                return new Flower4(materialManager);
             case PINE:
                 return new Pine(materialManager);
             case ANT:
                 return new Ant(materialManager.getAssetManager());
         }
-        return new Mushroom(materialManager);
+        return new Mushroom1(materialManager);
     }
 
     private float randomCoordFromCenter(float maxDist) {
