@@ -7,6 +7,7 @@ import com.jme3.scene.Spatial;
 import com.treil.render.scene.DecorationManager;
 import com.treil.render.scene.mesh.Hex;
 import com.treil.render.scene.mesh.HexBorder;
+import com.treil.sfgame.map.MapLocation;
 import com.treil.sfgame.map.Terrain;
 
 import javax.annotation.Nonnull;
@@ -19,6 +20,9 @@ import java.util.List;
 public class HexTile extends Node {
     private static final Hex tilePrimitive = new Hex(0f, 0f, 1f);
     private static final HexBorder borderPrimitive = new HexBorder(0f, 0f, 1f, 2f);
+
+    @Nonnull
+    private MapLocation location = new MapLocation(-1, -1);
 
     public HexTile(float x, float y, float radius,
                    @Nonnull Material tileMaterial, @Nonnull Material borderMaterial) {
@@ -38,5 +42,9 @@ public class HexTile extends Node {
     public void addDecorations(@Nonnull DecorationManager decorationManager, @Nonnull Terrain terrain) {
         List<Spatial> decorations = decorationManager.getDecorations(terrain);
         decorations.forEach(this::attachChild);
+    }
+
+    public void setLocation(@Nonnull MapLocation location) {
+        this.location = location;
     }
 }

@@ -9,6 +9,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.treil.render.scene.tile.HexTile;
 import com.treil.sfgame.map.HexMap;
+import com.treil.sfgame.player.Player;
+import com.treil.sfgame.units.Unit;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -18,14 +21,20 @@ import java.util.List;
  * @since 13/09/2017.
  */
 public class MainScene implements Scene {
-    private MapRenderer renderer;
+    private MapRenderer mapRenderer;
+    private UnitsRenderer unitsRenderer;
 
-    public void init(SimpleApplication application, HexMap map) {
+    public void init(@NotNull SimpleApplication application, @NotNull HexMap map, @NotNull List<Player> players) {
         AssetManager assetManager = application.getAssetManager();
 
-        renderer = new MapRenderer(assetManager, map);
+        mapRenderer = new MapRenderer(assetManager, map);
         final Node rootNode = application.getRootNode();
-        attachTiles(renderer.getTiles(), rootNode);
+        attachTiles(mapRenderer.getTiles(), rootNode);
+
+        unitsRenderer = new UnitsRenderer(assetManager, mapRenderer, rootNode);
+        players.forEach(player -> {
+            unitsRenderer.registerUnits(player.getUnits());
+        });
 
         // Sunlight
         DirectionalLight sun = new DirectionalLight();
@@ -48,9 +57,13 @@ public class MainScene implements Scene {
         //map.rotate(0, tpf, 0);
     }
 
+    public void onUnitUpdate(Unit unit) {
+        unitsRenderer.onUnitUpdate(unit);
+    }
+
     @Override
     @Nonnull
     public Vector3f getExtent() {
-        return renderer.getExtent();
+        return mapRenderer.getExtent();
     }
 }

@@ -21,6 +21,11 @@ public class HexMap {
     }
 
     @Nullable
+    public HexCell getCellAt(@Nonnull MapLocation location) {
+        return getCellAt(location.getRow(), location.getColumn());
+    }
+
+    @Nullable
     public HexCell getCellAt(int row, int column) {
         if (row >= 0 && row < rows.size()) {
             HexRow cells = rows.get(row);
@@ -33,8 +38,9 @@ public class HexMap {
 
     @Nullable
     public HexCell getSibling(@Nonnull final HexCell cell, @Nonnull final HexDirection direction) {
-        final int row = cell.getRow();
-        final int column = cell.getColumn();
+        final MapLocation location = cell.getLocation();
+        final int row = location.getRow();
+        final int column = location.getColumn();
         int colOffset = 0;
         switch (direction) {
             case EAST:
@@ -52,7 +58,7 @@ public class HexMap {
                 colOffset = row % 2 == 0 ? -1 : 0;
                 break;
         }
-        return getCellAt(row + direction.getRowOffset(), column + colOffset);
+        return getCellAt(new MapLocation(row + direction.getRowOffset(), column + colOffset));
     }
 
     public int getRowCount() {

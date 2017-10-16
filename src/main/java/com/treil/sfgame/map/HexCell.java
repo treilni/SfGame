@@ -7,23 +7,18 @@ import javax.annotation.Nonnull;
  * @since 26/09/2017.
  */
 public class HexCell {
-    private final int row;
-    private final int column;
+    @Nonnull
+    private final MapLocation location;
     @Nonnull
     private Terrain terrain;
 
     public HexCell(int row, int column, MapGenerator mapGenerator) {
-        this.row = row;
-        this.column = column;
+        this.location = new MapLocation(row, column);
         terrain = mapGenerator.getTerrain(row, column);
     }
 
-    public int getRow() {
-        return row;
-    }
-
-    public int getColumn() {
-        return column;
+    public MapLocation getLocation() {
+        return location;
     }
 
     @Nonnull

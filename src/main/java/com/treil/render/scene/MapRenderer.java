@@ -9,11 +9,14 @@ import com.treil.render.geom.HasExtent;
 import com.treil.render.scene.tile.HexTile;
 import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexMap;
+import com.treil.sfgame.map.MapLocation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Nicolas
@@ -29,6 +32,8 @@ class MapRenderer implements HasExtent {
     private final HexMap map;
     @Nonnull
     private final List<HexTile> tiles = new ArrayList<>();
+    @Nonnull
+    private final Map<MapLocation, HexTile> locationToTile = new HashMap<>();
 
     MapRenderer(@Nonnull AssetManager assetManager, @Nonnull HexMap map) {
         this.map = map;
@@ -49,11 +54,18 @@ class MapRenderer implements HasExtent {
                 if (cell != null) {
                     Material tileMat = getTileMat(assetManager, cell);
                     final HexTile tile = new HexTile(x, y, hexRadius, tileMat, borderMat);
+                    setTileLocation(r, c, tile);
                     tile.addDecorations(decorationManager, cell.getTerrain());
                     tiles.add(tile);
                 }
             }
         }
+    }
+
+    private void setTileLocation(int r, int c, @Nonnull HexTile tile) {
+        final MapLocation location = new MapLocation(r, c);
+        locationToTile.put(location, tile);
+        tile.setLocation(location);
     }
 
     private Material getTileMat(AssetManager assetManager, HexCell cell) {
@@ -100,5 +112,9 @@ class MapRenderer implements HasExtent {
         float xStep = (float) (2 * smallRadius);
         float yStep = (float) (xStep * Math.sin(Angle.DEG_60));
         return new Vector3f(xStep * map.getColCount(), 0f, yStep * map.getRowCount());
+    }
+
+    public HexTile getTileAt(@Nonnull MapLocation location) {
+        return locationToTile.get(location);
     }
 }

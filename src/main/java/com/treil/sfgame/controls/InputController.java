@@ -2,51 +2,28 @@ package com.treil.sfgame.controls;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
-import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static com.treil.sfgame.controls.Action.NONE;
 
 /**
  * @author Nicolas
  * @since 27/09/2017.
  */
 public class InputController {
-    // Actions
-    enum Action {
-        LEFT, RIGHT, UP, DOWN, FORWARD, BACKWARD,
-        NONE;
-
-        private static Map<String, Action> map = null;
-
-        @Nonnull
-        static Action forName(@Nullable String name) {
-            if (map == null) {
-                map = new HashMap<>();
-                for (Action action : values()) {
-                    map.put(action.name(), action);
-                }
-            }
-            final Action action = map.get(name);
-            return action != null ? action : NONE;
-        }
-
-        @Nonnull
-        public static String[] names() {
-            return Arrays.stream(values()).map(Enum::name).collect(Collectors.toList()).toArray(new String[0]);
-        }
-    }
-
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(InputController.class);
+    @Nonnull
     private InputManager inputManager;
-    private CamMovementController camMovementController;
+    @Nonnull
+    private Collection<ControlListener> actionListeners = new ArrayList<>();
 
-    public InputController(InputManager inputManager,
-                           CamMovementController camMovementController) {
+    public InputController(@Nonnull InputManager inputManager) {
         this.inputManager = inputManager;
 
         // init keys
@@ -55,26 +32,22 @@ public class InputController {
         addKeyMapping(Action.FORWARD, KeyInput.KEY_UP);
         addKeyMapping(Action.BACKWARD, KeyInput.KEY_DOWN);
 
-        AnalogListener analogListener = (name, value, tpf) -> {
-            switch (Action.forName(name)) {
-                case LEFT:
-                    break;
-                case RIGHT:
-                    break;
-                case UP:
-                    break;
-                case DOWN:
-                    break;
-                case FORWARD:
-                    break;
-                case BACKWARD:
-                    break;
-                case NONE:
-                    break;
+        ActionListener listener = (name, value, tpf) -> {
+            final Action action = Action.forName(name);
+            if (value && action != NONE) {
+                actionListeners.stream()
+                        .filter(ControlListener::isActive)
+                        .forEach(l -> {
+                            l.processAction(action);
+                        });
             }
         };
 
-        inputManager.addListener(analogListener, Action.names());
+        inputManager.addListener(listener, Action.names());
+    }
+
+    public void registerListener(@Nonnull ControlListener listener) {
+        actionListeners.add(listener);
     }
 
     private void addKeyMapping(Action action, int key) {
@@ -85,7 +58,6 @@ public class InputController {
     public String toString() {
         return "InputController{" +
                 "inputManager=" + inputManager +
-                ", camMovementController=" + camMovementController +
                 '}';
     }
 }

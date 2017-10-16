@@ -6,8 +6,8 @@ import com.jme3.scene.Spatial;
 import com.treil.render.geom.Angle;
 import com.treil.render.scene.decoration.*;
 import com.treil.render.scene.material.MaterialManager;
-import com.treil.render.scene.units.Ant;
-import com.treil.render.scene.units.Unit;
+import com.treil.render.scene.units.AntSprite;
+import com.treil.render.scene.units.UnitSprite;
 import com.treil.sfgame.map.Terrain;
 
 import javax.annotation.Nonnull;
@@ -76,9 +76,9 @@ public class DecorationManager {
             tree.move(randomCoordFromCenter(), 0f, randomCoordFromCenter());
             result.add(tree);
         } else if (terrain == Terrain.WATER) {
-            final Unit ant = new Ant(materialManager.getAssetManager());
-            randomRotateAroundY(ant);
-            result.add(ant);
+//            final UnitSprite ant = new AntSprite(materialManager.getAssetManager());
+//            randomRotateAroundY(ant);
+//            result.add(ant);
         }
         return result;
     }
@@ -110,7 +110,7 @@ public class DecorationManager {
             case PINE:
                 return new Pine(materialManager);
             case ANT:
-                return new Ant(materialManager.getAssetManager());
+                return new AntSprite(materialManager.getAssetManager());
         }
         return new Mushroom1(materialManager);
     }

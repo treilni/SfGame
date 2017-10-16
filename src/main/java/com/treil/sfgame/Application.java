@@ -6,11 +6,19 @@ import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
 import com.treil.render.geom.Size2D;
 import com.treil.render.scene.MainScene;
-import com.treil.render.scene.Scene;
+import com.treil.sfgame.controls.Action;
+import com.treil.sfgame.controls.ControlListener;
 import com.treil.sfgame.controls.CamMovementController;
+import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.gui.GuiManager;
+import com.treil.sfgame.map.HexCell;
+import com.treil.sfgame.map.HexDirection;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.RandomMapGenerator;
+import com.treil.sfgame.player.Player;
+import com.treil.sfgame.units.Ant;
+import com.treil.sfgame.units.Unit;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -18,15 +26,25 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Nicolas
  * @since 12/09/2017.
  */
 @Component
-public class Application extends SimpleApplication {
+public class Application extends SimpleApplication implements ControlListener {
+    @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
-    private Scene scene = new MainScene();
+
+    @Nonnull
+    private final MainScene scene = new MainScene();
+
+    private HexMap map;
+
+    @Nonnull
+    private final List<Player> players = new ArrayList<>();
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
@@ -55,23 +73,35 @@ public class Application extends SimpleApplication {
     }
 
     public void simpleInitApp() {
-        HexMap map = new HexMap(20, 40, new RandomMapGenerator());
-        scene.init(this, map);
+        map = new HexMap(20, 40, new RandomMapGenerator());
+        final Player player1 = getDefaultPlayer();
+        players.add(player1);
+
+        scene.init(this, map, players);
         rootNode.updateModelBound();
         rootNode.updateGeometricState();
 
         final CamMovementController camMovementController = new CamMovementController(flyCam, cam, stateManager, inputManager);
         camMovementController.setExtent(scene.getExtent());
         camMovementController.center();
-        //InputController inputControler = new InputController(inputManager, camMovementController);
-        //logger.info("Initialized " + inputControler);
-
+        InputController inputControler = new InputController(inputManager);
+        logger.info("Initialized " + inputControler);
+        inputControler.registerListener(this);
 
         GuiGlobals.initialize(this);
         BaseStyles.loadGlassStyle();
         GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
         GuiManager guiManager = new GuiManager(guiNode, getSize());
         logger.info("Initialized " + guiManager);
+    }
+
+    @NotNull
+    private Player getDefaultPlayer() {
+        final Player result = new Player();
+        final Ant ant = new Ant();
+        ant.setPosition(map.getCellAt(5, 10));
+        result.addUnit(ant);
+        return result;
     }
 
     /* Use the main event loop to trigger repeating actions. */
@@ -84,5 +114,41 @@ public class Application extends SimpleApplication {
     public Size2D getSize() {
         final AppSettings appSettings = getAppSettings();
         return new Size2D(appSettings.getWidth(), appSettings.getHeight());
+    }
+
+    @Override
+    public boolean isActive() {
+        return true;
+    }
+
+    @Override
+    public void processAction(@Nonnull Action action) {
+        final Unit unit = players.get(0).getUnits().get(0);
+        HexDirection direction = null;
+        switch (action) {
+            case LEFT:
+                direction = HexDirection.WEST;
+                break;
+            case RIGHT:
+                direction = HexDirection.EAST;
+                break;
+            case UP:
+                direction = HexDirection.NORTH_EAST;
+                break;
+            case DOWN:
+                direction = HexDirection.SOUTH_EAST;
+                break;
+            case FORWARD:
+            case BACKWARD:
+            case NONE:
+                break;
+        }
+        if (direction != null) {
+            final HexCell newPosition = map.getSibling(unit.getPosition(), direction);
+            if (newPosition != null) {
+                unit.setPosition(newPosition);
+                scene.onUnitUpdate(unit);
+            }
+        }
     }
 }
