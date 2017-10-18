@@ -7,18 +7,16 @@ import com.simsilica.lemur.style.BaseStyles;
 import com.treil.render.geom.Size2D;
 import com.treil.render.scene.MainScene;
 import com.treil.sfgame.controls.Action;
-import com.treil.sfgame.controls.ControlListener;
 import com.treil.sfgame.controls.CamMovementController;
+import com.treil.sfgame.controls.ControlListener;
 import com.treil.sfgame.controls.InputController;
+import com.treil.sfgame.game.GameManager;
 import com.treil.sfgame.gui.GuiManager;
 import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexDirection;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.RandomMapGenerator;
-import com.treil.sfgame.player.Player;
-import com.treil.sfgame.units.Ant;
 import com.treil.sfgame.units.Unit;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -26,8 +24,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Nicolas
@@ -42,9 +38,7 @@ public class Application extends SimpleApplication implements ControlListener {
     private final MainScene scene = new MainScene();
 
     private HexMap map;
-
-    @Nonnull
-    private final List<Player> players = new ArrayList<>();
+    private GameManager gameManager;
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
@@ -74,10 +68,9 @@ public class Application extends SimpleApplication implements ControlListener {
 
     public void simpleInitApp() {
         map = new HexMap(20, 40, new RandomMapGenerator());
-        final Player player1 = getDefaultPlayer();
-        players.add(player1);
 
-        scene.init(this, map, players);
+        gameManager = new GameManager(map);
+        scene.init(this, map, gameManager.getPlayers());
         rootNode.updateModelBound();
         rootNode.updateGeometricState();
 
@@ -92,16 +85,8 @@ public class Application extends SimpleApplication implements ControlListener {
         BaseStyles.loadGlassStyle();
         GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
         GuiManager guiManager = new GuiManager(guiNode, getSize());
-        logger.info("Initialized " + guiManager);
-    }
 
-    @NotNull
-    private Player getDefaultPlayer() {
-        final Player result = new Player();
-        final Ant ant = new Ant();
-        ant.setPosition(map.getCellAt(5, 10));
-        result.addUnit(ant);
-        return result;
+        logger.info("Initialized " + guiManager);
     }
 
     /* Use the main event loop to trigger repeating actions. */
@@ -123,7 +108,7 @@ public class Application extends SimpleApplication implements ControlListener {
 
     @Override
     public void processAction(@Nonnull Action action) {
-        final Unit unit = players.get(0).getUnits().get(0);
+        final Unit unit = gameManager.getSelectedUnit();
         HexDirection direction = null;
         switch (action) {
             case LEFT:
@@ -143,9 +128,10 @@ public class Application extends SimpleApplication implements ControlListener {
             case NONE:
                 break;
         }
-        if (direction != null) {
+        if (direction != null && unit != null) {
             final HexCell newPosition = map.getSibling(unit.getPosition(), direction);
             if (newPosition != null) {
+                logger.debug("New position : " + newPosition.getLocation());
                 unit.setPosition(newPosition);
                 scene.onUnitUpdate(unit);
             }

@@ -12,16 +12,12 @@ import java.util.List;
 
 /**
  * @author Nicolas
- * @since 25/09/2017.
+ * @since 18/10/2017.
  */
-public class HexBorder extends Mesh {
-    private static final float DEFAULT_HEIGHT_OFFSET = 0.00001f;
+public class Arc extends Mesh {
+    private static final float heightOffset = 0.00002f;
 
-    public HexBorder(float x, float y, float radius, float borderSizePct) {
-        this(x, y, radius, borderSizePct, DEFAULT_HEIGHT_OFFSET);
-    }
-
-    public HexBorder(float x, float y, float radius, float borderSizePct, float heightOffset) {
+    public Arc(float x, float y, float radius, float borderSizePct) {
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector2f> texCoord = new ArrayList<>();
         double angle = Angle.DEG_30;

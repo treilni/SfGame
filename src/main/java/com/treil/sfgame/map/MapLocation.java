@@ -39,4 +39,12 @@ public class MapLocation {
         result = 31 * result + column;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MapLocation{" +
+                "row=" + row +
+                ", column=" + column +
+                '}';
+    }
 }

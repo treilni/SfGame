@@ -7,6 +7,7 @@ import com.jme3.math.Vector3f;
 import com.treil.render.geom.Angle;
 import com.treil.render.geom.HasExtent;
 import com.treil.render.scene.tile.HexTile;
+import com.treil.render.scene.tile.SelectionMarker;
 import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.MapLocation;
@@ -34,6 +35,7 @@ class MapRenderer implements HasExtent {
     private final List<HexTile> tiles = new ArrayList<>();
     @Nonnull
     private final Map<MapLocation, HexTile> locationToTile = new HashMap<>();
+    private final SelectionMarker hexHoverNode;
 
     MapRenderer(@Nonnull AssetManager assetManager, @Nonnull HexMap map) {
         this.map = map;
@@ -60,6 +62,10 @@ class MapRenderer implements HasExtent {
                 }
             }
         }
+
+        final Material selectionMaterial = getUnshadedMaterial(assetManager, Colors.hexHoverColor);
+        hexHoverNode = new SelectionMarker(selectionMaterial);
+
     }
 
     private void setTileLocation(int r, int c, @Nonnull HexTile tile) {
@@ -93,7 +99,7 @@ class MapRenderer implements HasExtent {
         return getUnshadedMaterial(assetManager, color);
     }
 
-    private Material getUnshadedMaterial(AssetManager assetManager, ColorRGBA color) {
+    Material getUnshadedMaterial(AssetManager assetManager, ColorRGBA color) {
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);

@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 public class Unit {
     private int movementPoints = 0;
     private HexCell position;
+    private boolean selected = false;
 
     public void setMovementPoints(int movementPoints) {
         this.movementPoints = movementPoints;
@@ -22,5 +23,17 @@ public class Unit {
 
     public HexCell getPosition() {
         return position;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public int getMovementPoints() {
+        return movementPoints;
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 }

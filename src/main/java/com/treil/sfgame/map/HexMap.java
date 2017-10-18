@@ -58,7 +58,8 @@ public class HexMap {
                 colOffset = row % 2 == 0 ? -1 : 0;
                 break;
         }
-        return getCellAt(new MapLocation(row + direction.getRowOffset(), column + colOffset));
+        final MapLocation siblingLocation = new MapLocation(row + direction.getRowOffset(), column + colOffset);
+        return getCellAt(siblingLocation);
     }
 
     public int getRowCount() {

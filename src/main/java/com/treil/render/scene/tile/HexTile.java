@@ -26,10 +26,10 @@ public class HexTile extends Node {
 
     public HexTile(float x, float y, float radius,
                    @Nonnull Material tileMaterial, @Nonnull Material borderMaterial) {
-        Geometry tileGeom = new Geometry("map", tilePrimitive);
+        Geometry tileGeom = new Geometry("tile", tilePrimitive);
         tileGeom.setMaterial(tileMaterial);
 
-        Geometry borderGeom = new Geometry("map", borderPrimitive);
+        Geometry borderGeom = new Geometry("tileBorder", borderPrimitive);
         borderGeom.setMaterial(borderMaterial);
 
         attachChild(tileGeom);
