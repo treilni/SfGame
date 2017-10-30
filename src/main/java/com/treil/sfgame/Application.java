@@ -12,11 +12,8 @@ import com.treil.sfgame.controls.ControlListener;
 import com.treil.sfgame.controls.InputController;
 import com.treil.sfgame.game.GameManager;
 import com.treil.sfgame.gui.GuiManager;
-import com.treil.sfgame.map.HexCell;
-import com.treil.sfgame.map.HexDirection;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.RandomMapGenerator;
-import com.treil.sfgame.units.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -69,7 +66,7 @@ public class Application extends SimpleApplication implements ControlListener {
     public void simpleInitApp() {
         map = new HexMap(20, 40, new RandomMapGenerator());
 
-        gameManager = new GameManager(map);
+        gameManager = new GameManager(map, scene);
         scene.init(this, map, gameManager.getPlayers());
         rootNode.updateModelBound();
         rootNode.updateGeometricState();
@@ -108,33 +105,6 @@ public class Application extends SimpleApplication implements ControlListener {
 
     @Override
     public void processAction(@Nonnull Action action) {
-        final Unit unit = gameManager.getSelectedUnit();
-        HexDirection direction = null;
-        switch (action) {
-            case LEFT:
-                direction = HexDirection.WEST;
-                break;
-            case RIGHT:
-                direction = HexDirection.EAST;
-                break;
-            case UP:
-                direction = HexDirection.NORTH_EAST;
-                break;
-            case DOWN:
-                direction = HexDirection.SOUTH_EAST;
-                break;
-            case FORWARD:
-            case BACKWARD:
-            case NONE:
-                break;
-        }
-        if (direction != null && unit != null) {
-            final HexCell newPosition = map.getSibling(unit.getPosition(), direction);
-            if (newPosition != null) {
-                logger.debug("New position : " + newPosition.getLocation());
-                unit.setPosition(newPosition);
-                scene.onUnitUpdate(unit);
-            }
-        }
+        gameManager.processAction(action);
     }
 }

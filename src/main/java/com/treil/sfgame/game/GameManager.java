@@ -1,7 +1,9 @@
 package com.treil.sfgame.game;
 
+import com.treil.sfgame.controls.Action;
 import com.treil.sfgame.gui.GuiCommand;
 import com.treil.sfgame.map.HexCell;
+import com.treil.sfgame.map.HexDirection;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Ant;
@@ -34,9 +36,12 @@ public class GameManager implements GuiCommand.Listener {
     private final List<Player> players = new ArrayList<>();
     @Nonnull
     private final HexMap map;
+    @Nonnull
+    private final GameEventListener gameEventListener;
 
-    public GameManager(@Nonnull HexMap map) {
+    public GameManager(@Nonnull HexMap map, @Nonnull GameEventListener gameEventListener) {
         this.map = map;
+        this.gameEventListener = gameEventListener;
         final Player player1 = getDefaultPlayer(map);
         players.add(player1);
         nextPlayer();
@@ -48,7 +53,7 @@ public class GameManager implements GuiCommand.Listener {
         final Ant ant = new Ant();
         final HexCell midMap = map.getCellAt(map.getRowCount() / 2, map.getColCount() / 2);
         assert midMap != null;
-        ant.setPosition(midMap);
+        moveUnitToPosition(ant, midMap, false);
         result.addUnit(ant);
         return result;
     }
@@ -79,8 +84,7 @@ public class GameManager implements GuiCommand.Listener {
         if (selectedUnit != null) {
             selectedUnit.setSelected(true);
             reachableCells = map.getReachableCells(selectedUnit.getPosition(), selectedUnit.getMovementPoints());
-        }
-        else {
+        } else {
             reachableCells = new HashMap<>();
         }
         map.setHighlightedCells(reachableCells);
@@ -112,4 +116,52 @@ public class GameManager implements GuiCommand.Listener {
     private void endGame() {
 
     }
+
+    public void processAction(@Nonnull Action action) {
+        final Unit unit = getSelectedUnit();
+        HexDirection direction = null;
+        switch (action) {
+            case LEFT:
+                direction = HexDirection.WEST;
+                break;
+            case RIGHT:
+                direction = HexDirection.EAST;
+                break;
+            case UP:
+                direction = HexDirection.NORTH_EAST;
+                break;
+            case DOWN:
+                direction = HexDirection.SOUTH_EAST;
+                break;
+            case FORWARD:
+            case BACKWARD:
+            case NONE:
+                break;
+        }
+        if (direction != null && unit != null) {
+            final HexCell newPosition = map.getSibling(unit.getPosition(), direction);
+            if (newPosition != null) {
+                logger.debug("New position : " + newPosition.getLocation());
+                moveUnitToPosition(unit, newPosition, true);
+                gameEventListener.onUnitUpdate(unit);
+            }
+        }
+    }
+
+    private boolean moveUnitToPosition(@Nonnull Unit unit, @Nonnull HexCell newPosition, boolean useMovementPoints) {
+        if (useMovementPoints) {
+            final int usablePoints = unit.getMovementPoints();
+            final int movementCost = newPosition.getTerrain().getMovementCost();
+            if (usablePoints < movementCost) {
+                return false;
+            }
+            unit.setMovementPoints(usablePoints - movementCost);
+        }
+        unit.setPosition(newPosition);
+        if (unit.isSelected()) {
+            setSelectedUnit(unit);
+        }
+        return true;
+    }
+
 }

@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.treil.render.scene.tile.HexTile;
+import com.treil.sfgame.game.GameEventListener;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Unit;
@@ -24,7 +25,7 @@ import java.util.List;
  * @author Nicolas
  * @since 13/09/2017.
  */
-public class MainScene implements Scene {
+public class MainScene implements Scene, GameEventListener {
     private MapRenderer mapRenderer;
     private UnitsRenderer unitsRenderer;
 
