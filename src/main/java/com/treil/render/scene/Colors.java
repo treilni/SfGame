@@ -9,4 +9,5 @@ import com.jme3.math.ColorRGBA;
 public interface Colors {
     ColorRGBA selectedUnitColor = ColorRGBA.Cyan;
     ColorRGBA hexHoverColor = ColorRGBA.LightGray;
+    ColorRGBA highlightedCellColor = ColorRGBA.Yellow;
 }

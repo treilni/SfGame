@@ -20,10 +20,11 @@ public enum Action {
     @Nonnull
     static Action forName(@Nullable String name) {
         if (map == null) {
-            map = new HashMap<>();
+            final HashMap<String, Action> m = new HashMap<>();
             for (Action action : values()) {
-                map.put(action.name(), action);
+                m.put(action.name(), action);
             }
+            map = m;
         }
         final Action action = map.get(name);
         return action != null ? action : NONE;

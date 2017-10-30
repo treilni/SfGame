@@ -3,7 +3,9 @@ package com.treil.sfgame.map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Nicolas
@@ -12,6 +14,9 @@ import java.util.List;
 public class HexMap {
     @Nonnull
     final private List<HexRow> rows = new ArrayList<>();
+    @Nonnull
+    final private Map<HexCell, Integer> highlightedCells = new HashMap<>();
+    private boolean highlightUpdated = false;
 
     public HexMap(final int rowCount, final int columns, @Nonnull MapGenerator mapGenerator) {
         for (int r = 0; r < rowCount; r++) {
@@ -62,11 +67,68 @@ public class HexMap {
         return getCellAt(siblingLocation);
     }
 
+    /**
+     * @param startingCell the start location
+     * @return a map of hexes indexing the cost needed to reach them
+     */
+    @Nonnull
+    public Map<HexCell, Integer> getReachableCells(@Nonnull HexCell startingCell, int movementPoints) {
+        Map<HexCell, Integer> result = new HashMap<>();
+        getReachableCells(startingCell, 0, movementPoints, result);
+        result.remove(startingCell);
+        return result;
+    }
+
+    private void getReachableCells(HexCell startingCell, int startingCost, int movementPoints, Map<HexCell, Integer> result) {
+        final Integer currentCost = result.get(startingCell);
+        if (currentCost == null || currentCost > startingCost) {
+            result.put(startingCell, startingCost);
+            List<HexCell> siblings = getSiblings(startingCell);
+            siblings.forEach(sibling -> {
+                final int siblingCost = sibling.getTerrain().getMovementCost() + startingCost;
+                if (siblingCost <= movementPoints) {
+                    getReachableCells(sibling, siblingCost, movementPoints, result);
+                }
+            });
+        }
+    }
+
+    @Nonnull
+    private List<HexCell> getSiblings(@Nonnull HexCell startingCell) {
+        List<HexCell> result = new ArrayList<>();
+        for (HexDirection direction : HexDirection.values()) {
+            final HexCell sibling = getSibling(startingCell, direction);
+            if (sibling != null) {
+                result.add(sibling);
+            }
+        }
+        return result;
+    }
+
     public int getRowCount() {
         return rows.size();
     }
 
     public int getColCount() {
         return rows.size() > 0 ? rows.get(0).size() : 0;
+    }
+
+    public void setHighlightedCells(@Nonnull Map<HexCell, Integer> cellMap) {
+        highlightedCells.clear();
+        highlightedCells.putAll(cellMap);
+        highlightUpdated = true;
+    }
+
+    @Nonnull
+    public Map<HexCell, Integer> getHighlightedCells() {
+        return highlightedCells;
+    }
+
+    public boolean highlightHasChanged(boolean reset) {
+        final boolean result = highlightUpdated;
+        if (reset) {
+            highlightUpdated = false;
+        }
+        return result;
     }
 }

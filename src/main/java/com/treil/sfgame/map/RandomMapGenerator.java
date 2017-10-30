@@ -2,8 +2,8 @@ package com.treil.sfgame.map;
 
 import com.treil.render.scene.mesh.terrain.NoiseMap;
 import com.treil.render.scene.mesh.terrain.PlainNoiseMap;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 /**
@@ -29,7 +29,7 @@ public class RandomMapGenerator implements MapGenerator {
         forestMap = new PlainNoiseMap(random.nextInt());
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Terrain getTerrain(int row, int column) {
         double x = column + 0.5d * (row % 2);

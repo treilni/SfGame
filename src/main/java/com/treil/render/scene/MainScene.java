@@ -2,10 +2,14 @@ package com.treil.render.scene;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
+import com.jme3.collision.CollisionResults;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.treil.render.scene.tile.HexTile;
 import com.treil.sfgame.map.HexMap;
@@ -27,14 +31,10 @@ public class MainScene implements Scene {
     public void init(@NotNull SimpleApplication application, @NotNull HexMap map, @NotNull List<Player> players) {
         AssetManager assetManager = application.getAssetManager();
 
-        mapRenderer = new MapRenderer(assetManager, map);
         final Node rootNode = application.getRootNode();
-        attachTiles(mapRenderer.getTiles(), rootNode);
-
+        mapRenderer = new MapRenderer(assetManager, map, rootNode);
         unitsRenderer = new UnitsRenderer(assetManager, mapRenderer, rootNode);
-        players.forEach(player -> {
-            unitsRenderer.registerUnits(player.getUnits());
-        });
+        players.forEach(player -> unitsRenderer.registerUnits(player.getUnits()));
 
         // Sunlight
         DirectionalLight sun = new DirectionalLight();
@@ -48,13 +48,17 @@ public class MainScene implements Scene {
         rootNode.addLight(ambientLight);
     }
 
-    private void attachTiles(@Nonnull List<HexTile> tiles, @Nonnull Node rootNode) {
-        tiles.forEach(rootNode::attachChild);
-    }
-
     public void update(float tpf, @Nonnull SimpleApplication application) {
-        // make the player rotate:
-        //map.rotate(0, tpf, 0);
+        final Vector2f cursorPosition = application.getInputManager().getCursorPosition().clone();
+        final Camera cam = application.getCamera();
+        Vector3f click3d = cam.getWorldCoordinates(cursorPosition, 0f).clone();
+        Vector3f dir = cam.getWorldCoordinates(cursorPosition, 1f).subtractLocal(click3d).normalizeLocal();
+        Ray ray = new Ray(click3d, dir);
+        CollisionResults results = new CollisionResults();
+        application.getRootNode().collideWith(ray, results);
+        final HexTile tileUnderCursor = mapRenderer.getTileAt(results);
+        mapRenderer.showPointedTile(tileUnderCursor);
+        mapRenderer.renderMapUpdate();
     }
 
     public void onUnitUpdate(Unit unit) {

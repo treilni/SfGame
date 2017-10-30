@@ -6,7 +6,7 @@ package com.treil.render.geom;
  * @author Nicolas
  * @since 05/10/2017.
  */
-public class Size2D implements Cloneable {
+public class Size2D {
     private int width;
     private int height;
 

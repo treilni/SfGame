@@ -2,7 +2,6 @@ package com.treil.render.scene;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -46,7 +45,7 @@ class UnitsRenderer {
         this.mapRenderer = mapRenderer;
         spriteFromClass.put(Ant.class, () -> new AntSprite(assetManager));
         this.rootNode = rootNode;
-        final Material selectionMaterial = mapRenderer.getUnshadedMaterial(assetManager, Colors.selectedUnitColor);
+        final Material selectionMaterial = mapRenderer.getUnshadedMaterial(Colors.selectedUnitColor);
         selectionNode = new SelectionMarker(selectionMaterial);
     }
 

@@ -1,6 +1,7 @@
 package com.treil.sfgame.game;
 
-import com.treil.sfgame.Application;
+import com.treil.sfgame.gui.GuiCommand;
+import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Ant;
@@ -12,14 +13,16 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Nicolas
  * @since 17/10/2017.
  */
-public class GameManager {
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+public class GameManager implements GuiCommand.Listener {
+    private static final Logger logger = LoggerFactory.getLogger(GameManager.class);
 
     private int totalTurns = 1;
     private int currentTurn = 0;
@@ -29,19 +32,23 @@ public class GameManager {
 
     @Nonnull
     private final List<Player> players = new ArrayList<>();
+    @Nonnull
+    private final HexMap map;
 
-
-    public GameManager(HexMap map) {
+    public GameManager(@Nonnull HexMap map) {
+        this.map = map;
         final Player player1 = getDefaultPlayer(map);
         players.add(player1);
-        setSelectedUnit(player1.getUnits().get(0));
+        nextPlayer();
     }
 
     @NotNull
     private Player getDefaultPlayer(HexMap map) {
         final Player result = new Player();
         final Ant ant = new Ant();
-        ant.setPosition(map.getCellAt(5, 10));
+        final HexCell midMap = map.getCellAt(map.getRowCount() / 2, map.getColCount() / 2);
+        assert midMap != null;
+        ant.setPosition(midMap);
         result.addUnit(ant);
         return result;
     }
@@ -57,6 +64,7 @@ public class GameManager {
             }
             currentTurn++;
         }
+        logger.info(String.format("Turn %d/%d, player %d", currentTurn, totalTurns, currentPlayer));
         final List<Unit> units = players.get(currentPlayer).getUnits();
         setSelectedUnit(units.isEmpty() ? null : units.get(0));
         return false;
@@ -67,9 +75,15 @@ public class GameManager {
             selectedUnit.setSelected(false);
         }
         selectedUnit = unit;
+        final Map<HexCell, Integer> reachableCells;
         if (selectedUnit != null) {
             selectedUnit.setSelected(true);
+            reachableCells = map.getReachableCells(selectedUnit.getPosition(), selectedUnit.getMovementPoints());
         }
+        else {
+            reachableCells = new HashMap<>();
+        }
+        map.setHighlightedCells(reachableCells);
     }
 
     @Nonnull
@@ -80,5 +94,22 @@ public class GameManager {
     @Nullable
     public Unit getSelectedUnit() {
         return selectedUnit;
+    }
+
+    @Override
+    public void processCommand(@Nonnull GuiCommand command) {
+        switch (command) {
+            case END_TURN:
+                if (nextPlayer()) {
+                    endGame();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void endGame() {
+
     }
 }

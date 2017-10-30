@@ -31,7 +31,9 @@
     <!-- Monitor logback configuration changes -->
     <logger level="INFO" name="ch.qos.logback"/>
 
-    <root level="DEBUG">
+    <logger level="INFO" name="com.treil"/>
+
+    <root level="ERROR">
         <appender-ref ref="console"/>
     </root>
 
