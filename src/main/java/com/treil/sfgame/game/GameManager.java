@@ -5,6 +5,7 @@ import com.treil.sfgame.gui.GuiCommand;
 import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexDirection;
 import com.treil.sfgame.map.HexMap;
+import com.treil.sfgame.map.MapLocation;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Ant;
 import com.treil.sfgame.units.Unit;
@@ -38,10 +39,15 @@ public class GameManager implements GuiCommand.Listener {
     private final HexMap map;
     @Nonnull
     private final GameEventListener gameEventListener;
+    @Nonnull
+    private final MapCellLocator mapCellLocator;
 
-    public GameManager(@Nonnull HexMap map, @Nonnull GameEventListener gameEventListener) {
+    public GameManager(@Nonnull HexMap map,
+                       @Nonnull GameEventListener gameEventListener,
+                       @Nonnull MapCellLocator mapCellLocator) {
         this.map = map;
         this.gameEventListener = gameEventListener;
+        this.mapCellLocator = mapCellLocator;
         final Player player1 = getDefaultPlayer(map);
         players.add(player1);
         nextPlayer();
@@ -96,7 +102,7 @@ public class GameManager implements GuiCommand.Listener {
     }
 
     @Nullable
-    public Unit getSelectedUnit() {
+    private Unit getSelectedUnit() {
         return selectedUnit;
     }
 
@@ -133,6 +139,9 @@ public class GameManager implements GuiCommand.Listener {
             case DOWN:
                 direction = HexDirection.SOUTH_EAST;
                 break;
+            case RIGHT_CLICK:
+                processRightClick();
+                return;
             case FORWARD:
             case BACKWARD:
             case NONE:
@@ -143,11 +152,30 @@ public class GameManager implements GuiCommand.Listener {
             if (newPosition != null) {
                 logger.debug("New position : " + newPosition.getLocation());
                 moveUnitToPosition(unit, newPosition, true);
-                gameEventListener.onUnitUpdate(unit);
             }
         }
     }
 
+    private void processRightClick() {
+        final MapLocation clickedLocation = mapCellLocator.getLocationUnderCursor();
+        final HexCell clickedCell = clickedLocation != null ? map.getCellAt(clickedLocation) : null;
+        if (clickedCell == null) {
+            return;
+        }
+        // Moving the selected unit
+        final Unit selectedUnit = getSelectedUnit();
+        if (selectedUnit != null) {
+            final Map<HexCell, Integer> reachableCells = map.getReachableCells(selectedUnit.getPosition(), selectedUnit.getMovementPoints());
+            final Integer cost = reachableCells.get(clickedCell);
+            if (cost != null) {
+                // cell is reachable
+                boolean movementDone = moveUnitToPosition(selectedUnit, clickedCell, true);
+                logger.info("Movement to " + clickedCell.getLocation() + " : " + movementDone);
+            }
+        }
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
     private boolean moveUnitToPosition(@Nonnull Unit unit, @Nonnull HexCell newPosition, boolean useMovementPoints) {
         if (useMovementPoints) {
             final int usablePoints = unit.getMovementPoints();
@@ -161,6 +189,7 @@ public class GameManager implements GuiCommand.Listener {
         if (unit.isSelected()) {
             setSelectedUnit(unit);
         }
+        gameEventListener.onUnitUpdate(unit);
         return true;
     }
 

@@ -2,8 +2,10 @@ package com.treil.sfgame.controls;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
@@ -13,7 +15,10 @@ import java.util.Collection;
 import static com.treil.sfgame.controls.Action.NONE;
 
 /**
- * @author Nicolas
+ * @auth
+ *
+ *
+ * or Nicolas
  * @since 27/09/2017.
  */
 public class InputController {
@@ -31,6 +36,10 @@ public class InputController {
         addKeyMapping(Action.RIGHT, KeyInput.KEY_RIGHT);
         addKeyMapping(Action.FORWARD, KeyInput.KEY_UP);
         addKeyMapping(Action.BACKWARD, KeyInput.KEY_DOWN);
+
+        // init mouse
+        addPointerMapping(Action.LEFT_CLICK, MouseInput.BUTTON_LEFT);
+        addPointerMapping(Action.RIGHT_CLICK, MouseInput.BUTTON_RIGHT);
 
         ActionListener listener = (name, value, tpf) -> {
             final Action action = Action.forName(name);
@@ -52,6 +61,10 @@ public class InputController {
 
     private void addKeyMapping(Action action, int key) {
         inputManager.addMapping(action.name(), new KeyTrigger(key));
+    }
+
+    private void addPointerMapping(Action action, int mouseButton) {
+        inputManager.addMapping(action.name(), new MouseButtonTrigger(mouseButton));
     }
 
     @Override

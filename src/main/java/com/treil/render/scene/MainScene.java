@@ -13,21 +13,26 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.treil.render.scene.tile.HexTile;
 import com.treil.sfgame.game.GameEventListener;
+import com.treil.sfgame.game.MapCellLocator;
 import com.treil.sfgame.map.HexMap;
+import com.treil.sfgame.map.MapLocation;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Unit;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * @author Nicolas
  * @since 13/09/2017.
  */
-public class MainScene implements Scene, GameEventListener {
+public class MainScene implements Scene, GameEventListener, MapCellLocator {
     private MapRenderer mapRenderer;
     private UnitsRenderer unitsRenderer;
+    private HexTile tileUnderCursor;
+    private IdlingTimer cursorTrackTimer = new IdlingTimer(100L);
 
     public void init(@NotNull SimpleApplication application, @NotNull HexMap map, @NotNull List<Player> players) {
         AssetManager assetManager = application.getAssetManager();
@@ -50,25 +55,35 @@ public class MainScene implements Scene, GameEventListener {
     }
 
     public void update(float tpf, @Nonnull SimpleApplication application) {
-        final Vector2f cursorPosition = application.getInputManager().getCursorPosition().clone();
-        final Camera cam = application.getCamera();
-        Vector3f click3d = cam.getWorldCoordinates(cursorPosition, 0f).clone();
-        Vector3f dir = cam.getWorldCoordinates(cursorPosition, 1f).subtractLocal(click3d).normalizeLocal();
-        Ray ray = new Ray(click3d, dir);
-        CollisionResults results = new CollisionResults();
-        application.getRootNode().collideWith(ray, results);
-        final HexTile tileUnderCursor = mapRenderer.getTileAt(results);
-        mapRenderer.showPointedTile(tileUnderCursor);
+        if (cursorTrackTimer.elapsed()) {
+            final Vector2f cursorPosition = application.getInputManager().getCursorPosition().clone();
+            final Camera cam = application.getCamera();
+            Vector3f click3d = cam.getWorldCoordinates(cursorPosition, 0f).clone();
+            Vector3f dir = cam.getWorldCoordinates(cursorPosition, 1f).subtractLocal(click3d).normalizeLocal();
+            Ray ray = new Ray(click3d, dir);
+            CollisionResults results = new CollisionResults();
+            application.getRootNode().collideWith(ray, results);
+            tileUnderCursor = mapRenderer.getTileAt(results);
+            mapRenderer.showPointedTile(tileUnderCursor);
+        }
         mapRenderer.renderMapUpdate();
     }
 
     public void onUnitUpdate(Unit unit) {
-        unitsRenderer.onUnitUpdate(unit);
+        if (unitsRenderer != null) {
+            unitsRenderer.onUnitUpdate(unit);
+        }
     }
 
     @Override
     @Nonnull
     public Vector3f getExtent() {
         return mapRenderer.getExtent();
+    }
+
+    @Nullable
+    @Override
+    public MapLocation getLocationUnderCursor() {
+        return tileUnderCursor != null ? tileUnderCursor.getLocation() : null;
     }
 }

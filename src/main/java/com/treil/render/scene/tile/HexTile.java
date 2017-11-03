@@ -54,6 +54,11 @@ public class HexTile extends Node implements HasCollidableParts {
     }
 
     @Nonnull
+    public MapLocation getLocation() {
+        return location;
+    }
+
+    @Nonnull
     @Override
     public Set<Geometry> getCollidableParts() {
         return Collections.singleton(tileGeom);

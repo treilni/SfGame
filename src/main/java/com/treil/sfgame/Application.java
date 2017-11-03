@@ -66,7 +66,7 @@ public class Application extends SimpleApplication implements ControlListener {
     public void simpleInitApp() {
         map = new HexMap(20, 40, new RandomMapGenerator());
 
-        gameManager = new GameManager(map, scene);
+        gameManager = new GameManager(map, scene, scene);
         scene.init(this, map, gameManager.getPlayers());
         rootNode.updateModelBound();
         rootNode.updateGeometricState();

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  */ // Actions
 public enum Action {
     LEFT, RIGHT, UP, DOWN, FORWARD, BACKWARD,
+    LEFT_CLICK, RIGHT_CLICK,
     NONE;
 
     private static Map<String, Action> map = null;
