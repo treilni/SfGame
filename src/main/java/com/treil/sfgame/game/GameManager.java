@@ -59,7 +59,7 @@ public class GameManager implements GuiCommand.Listener {
         final Ant ant = new Ant();
         final HexCell midMap = map.getCellAt(map.getRowCount() / 2, map.getColCount() / 2);
         assert midMap != null;
-        moveUnitToPosition(ant, midMap, false);
+        moveUnitToPosition(ant, midMap, 0);
         result.addUnit(ant);
         return result;
     }
@@ -151,7 +151,7 @@ public class GameManager implements GuiCommand.Listener {
             final HexCell newPosition = map.getSibling(unit.getPosition(), direction);
             if (newPosition != null) {
                 logger.debug("New position : " + newPosition.getLocation());
-                moveUnitToPosition(unit, newPosition, true);
+                moveUnitToPosition(unit, newPosition, newPosition.getTerrain().getMovementCost());
             }
         }
     }
@@ -169,22 +169,19 @@ public class GameManager implements GuiCommand.Listener {
             final Integer cost = reachableCells.get(clickedCell);
             if (cost != null) {
                 // cell is reachable
-                boolean movementDone = moveUnitToPosition(selectedUnit, clickedCell, true);
+                boolean movementDone = moveUnitToPosition(selectedUnit, clickedCell, cost);
                 logger.info("Movement to " + clickedCell.getLocation() + " : " + movementDone);
             }
         }
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    private boolean moveUnitToPosition(@Nonnull Unit unit, @Nonnull HexCell newPosition, boolean useMovementPoints) {
-        if (useMovementPoints) {
-            final int usablePoints = unit.getMovementPoints();
-            final int movementCost = newPosition.getTerrain().getMovementCost();
-            if (usablePoints < movementCost) {
-                return false;
-            }
-            unit.setMovementPoints(usablePoints - movementCost);
+    private boolean moveUnitToPosition(@Nonnull Unit unit, @Nonnull HexCell newPosition, int movementCost) {
+        final int usablePoints = unit.getMovementPoints();
+        if (usablePoints < movementCost) {
+            return false;
         }
+        unit.setMovementPoints(usablePoints - movementCost);
         unit.setPosition(newPosition);
         if (unit.isSelected()) {
             setSelectedUnit(unit);
