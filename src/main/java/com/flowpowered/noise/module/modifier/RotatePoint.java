@@ -90,6 +90,7 @@ public class RotatePoint extends Module {
         y2Matrix = xCos * zCos;
         z2Matrix = -yCos * xSin * zCos - ySin * zSin;
         x3Matrix = -ySin * xCos;
+        //noinspection SuspiciousNameCombination
         y3Matrix = xSin;
         z3Matrix = yCos * xCos;
 

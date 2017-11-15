@@ -17,8 +17,7 @@ public class HexMap {
 
     public HexMap(final int rowCount, final int columns, @Nonnull MapGenerator mapGenerator) {
         for (int r = 0; r < rowCount; r++) {
-            HexRow row = new HexRow(r, columns, mapGenerator);
-            rows.add(row);
+            rows.add(new HexRow(r, columns, mapGenerator));
         }
     }
 

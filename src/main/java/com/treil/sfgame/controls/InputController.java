@@ -15,13 +15,11 @@ import java.util.Collection;
 import static com.treil.sfgame.controls.Action.NONE;
 
 /**
- * @auth
- *
- *
- * or Nicolas
+ * @author Nicolas
  * @since 27/09/2017.
  */
 public class InputController {
+    @SuppressWarnings("unused")
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(InputController.class);
     @Nonnull
     private InputManager inputManager;
@@ -47,9 +45,7 @@ public class InputController {
             if (value && action != NONE) {
                 actionListeners.stream()
                         .filter(ControlListener::isActive)
-                        .forEach(l -> {
-                            l.processAction(action);
-                        });
+                        .forEach(l -> l.processAction(action));
             }
         };
 

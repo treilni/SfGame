@@ -43,7 +43,6 @@ public class HexTile extends Node implements HasCollidableParts {
         scale(radius);
     }
 
-    @Nonnull
     public void addDecorations(@Nonnull DecorationManager decorationManager, @Nonnull Terrain terrain) {
         List<Spatial> decorations = decorationManager.getDecorations(terrain);
         decorations.forEach(this::attachChild);

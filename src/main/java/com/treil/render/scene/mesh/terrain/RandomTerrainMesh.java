@@ -10,8 +10,11 @@ import com.flowpowered.noise.NoiseQuality;
 public class RandomTerrainMesh extends TerrainMesh {
     public static final int DEFAULT_SEED = 3874368;
     private int seed;
+    @SuppressWarnings("FieldCanBeLocal")
     private float maxHeight = 5.0f;
+    @SuppressWarnings("FieldCanBeLocal")
     private double frequency = 0.05F;
+    @SuppressWarnings("FieldCanBeLocal")
     private double flatness = 0.8F;
 
     public RandomTerrainMesh(int xExtent, int zExtent, float step) {

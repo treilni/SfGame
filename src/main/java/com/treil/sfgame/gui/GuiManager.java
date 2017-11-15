@@ -1,5 +1,6 @@
 package com.treil.sfgame.gui;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Command;
@@ -9,7 +10,9 @@ import com.treil.render.geom.Size2D;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * @author Nicolas
@@ -17,9 +20,11 @@ import java.util.Map;
  */
 public class GuiManager extends Container {
     private static final int ViewportHeightPercent = 15;
+    @Nonnull
+    private ResourceBundle resourceBundle;
 
     public enum State {
-        WELCOME, SETUP, MAIN_MENU, OVERWORLD, UNDERWORLD;
+        WELCOME, SETUP, MAIN_MENU, OVERWORLD, UNDERWORLD
     }
 
     @Nonnull
@@ -32,15 +37,23 @@ public class GuiManager extends Container {
     private final Map<State, Container> uiFromState = new HashMap<>();
 
     public GuiManager(@Nonnull Node guiNode, @Nonnull Size2D viewportSize) {
+        resourceBundle = initLanguageBundle();
         guiNode.attachChild(this);
 
         // Place at bottom of the viewport
         this.size = new Size2D(viewportSize.getWidth(), viewportSize.getHeight() * ViewportHeightPercent / 100);
         setLocalTranslation(0, size.getHeight(), 0);
+        setPreferredSize(new Vector3f(size.getWidth(), size.getHeight(), 0f));
 
         // Add some elements
 
         updateState();
+    }
+
+    @Nonnull
+    private ResourceBundle initLanguageBundle() {
+        Locale locale = new Locale("fr", "FR");
+        return ResourceBundle.getBundle("i18n", locale);
     }
 
     private void updateState() {
@@ -49,17 +62,22 @@ public class GuiManager extends Container {
             Container container = new Container();
             switch (newState) {
                 case WELCOME:
+                    initWelcomeUI(container);
+                    break;
                 case SETUP:
                 case MAIN_MENU:
                 case OVERWORLD:
                 case UNDERWORLD:
-                    container.addChild(new Label("Hello, World."));
-                    Button clickMe = addChild(new Button("Click Me"));
-                    clickMe.addClickCommands((Command<Button>) source -> System.out.println("The world is yours."));
                     break;
             }
             return container;
         }));
+    }
+
+    private void initWelcomeUI(Container container) {
+        container.addChild(new Label(resourceBundle.getString("game.title")));
+        Button nextTurn = container.addChild(new Button(resourceBundle.getString("next.turn")));
+        nextTurn.addClickCommands((Command<Button>) source -> System.out.println("The world is yours."));
     }
 
     @Override

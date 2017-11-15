@@ -32,7 +32,7 @@ public class CamMovementController {
     @Nonnull
     private Vector3f extent = new Vector3f();
 
-    public CamMovementController(@Nonnull FlyByCamera flyByCamera, Camera camera, AppStateManager stateManager, InputManager inputManager) {
+    public CamMovementController(@Nonnull FlyByCamera flyByCamera, @Nonnull Camera camera, AppStateManager stateManager, InputManager inputManager) {
         this.flyByCamera = flyByCamera;
         this.camera = camera;
         flyByCamera.setMoveSpeed(MOVEMENT_SPEED);
