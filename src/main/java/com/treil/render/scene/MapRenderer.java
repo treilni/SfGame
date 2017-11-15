@@ -28,6 +28,7 @@ import java.util.*;
  * @since 26/09/2017.
  */
 class MapRenderer implements HasExtent {
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(MapRenderer.class);
 
     private static final float hexRadius = 1f;
@@ -39,8 +40,6 @@ class MapRenderer implements HasExtent {
     private final HexMap map;
     @Nonnull
     private final Node rootNode;
-    @Nonnull
-    private final List<HexTile> tiles = new ArrayList<>();
     @Nonnull
     private final Map<MapLocation, HexTile> locationToTile = new HashMap<>();
     @Nonnull
@@ -76,11 +75,8 @@ class MapRenderer implements HasExtent {
                     Material tileMat = getTileMat(assetManager, cell);
                     final HexTile tile = new HexTile(x, y, hexRadius, tileMat, borderMat);
                     setTileLocation(r, c, tile);
-                    tile.getCollidableParts().forEach(spatial -> {
-                        collidableToTile.put(spatial, tile);
-                    });
+                    tile.getCollidableParts().forEach(spatial -> collidableToTile.put(spatial, tile));
                     tile.addDecorations(decorationManager, cell.getTerrain());
-                    tiles.add(tile);
                     rootNode.attachChild(tile);
                 }
             }
@@ -129,11 +125,6 @@ class MapRenderer implements HasExtent {
         return mat;
     }
 
-    @Nonnull
-    List<HexTile> getTiles() {
-        return tiles;
-    }
-
     @NotNull
     @Override
     public Vector3f getExtent() {
@@ -143,11 +134,11 @@ class MapRenderer implements HasExtent {
         return new Vector3f(xStep * map.getColCount(), 0f, yStep * map.getRowCount());
     }
 
-    public HexTile getTileAt(@Nonnull MapLocation location) {
+    HexTile getTileAt(@Nonnull MapLocation location) {
         return locationToTile.get(location);
     }
 
-    public HexTile getTileAt(@Nonnull CollisionResults results) {
+    HexTile getTileAt(@Nonnull CollisionResults results) {
         int n = results.size();
         for (int i = 0; i < n; i++) {
             final CollisionResult collision = results.getCollision(i);
@@ -159,7 +150,7 @@ class MapRenderer implements HasExtent {
         return null;
     }
 
-    public void showPointedTile(@Nullable HexTile tileUnderCursor) {
+    void showPointedTile(@Nullable HexTile tileUnderCursor) {
         if (tileUnderCursor != null) {
             rootNode.attachChild(hexHoverNode);
             final Vector3f markerTranslation = tileUnderCursor.getWorldTranslation();
@@ -169,7 +160,7 @@ class MapRenderer implements HasExtent {
         }
     }
 
-    public void highliteCellSet(@Nonnull Set<HexCell> cellSet) {
+    private void highliteCellSet(@Nonnull Set<HexCell> cellSet) {
         usedHighlightMarkers.forEach(marker -> {
             marker.removeFromParent();
             freeHighlightMarkers.push(marker);
@@ -199,9 +190,9 @@ class MapRenderer implements HasExtent {
         return result;
     }
 
-    public void renderMapUpdate() {
+    void renderMapUpdate() {
         if (map.highlightHasChanged(true)) {
-            highliteCellSet(map.getHighlightedCells().keySet());
+            highliteCellSet(map.getHighlightedCells());
         }
     }
 }

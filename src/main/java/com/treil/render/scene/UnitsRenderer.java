@@ -25,6 +25,7 @@ import java.util.function.Supplier;
  * @since 26/09/2017.
  */
 class UnitsRenderer {
+    @SuppressWarnings("unused")
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(UnitsRenderer.class);
 
@@ -49,7 +50,7 @@ class UnitsRenderer {
         selectionNode = new SelectionMarker(selectionMaterial);
     }
 
-    public void registerUnits(@Nonnull List<Unit> units) {
+    void registerUnits(@Nonnull List<Unit> units) {
         units.forEach(unit -> {
             final Supplier<UnitSprite> spriteSupplier = spriteFromClass.get(unit.getClass());
             if (spriteSupplier != null) {
@@ -74,12 +75,12 @@ class UnitsRenderer {
         }
     }
 
-    public void onUnitUpdate(Unit unit) {
+    void onUnitUpdate(Unit unit) {
         hideSelection();
         updateUnitSpritePosition(unit);
     }
 
-    public void hideSelection() {
+    private void hideSelection() {
         selectionNode.removeFromParent();
     }
 }

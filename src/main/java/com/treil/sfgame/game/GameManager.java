@@ -29,7 +29,8 @@ public class GameManager implements GuiCommand.Listener {
 
     private int totalTurns = 1;
     private int currentTurn = 0;
-    private int currentPlayer = -1;
+    @Nonnull
+    private Player currentPlayer;
     @Nullable
     private Unit selectedUnit = null;
 
@@ -50,33 +51,48 @@ public class GameManager implements GuiCommand.Listener {
         this.mapCellLocator = mapCellLocator;
         final Player player1 = getDefaultPlayer(map);
         players.add(player1);
-        nextPlayer();
+        currentPlayer = player1;
+        logger.info(String.format("Turn %d/%d, player %s", currentTurn, totalTurns, currentPlayer.getName()));
     }
 
     @NotNull
     private Player getDefaultPlayer(HexMap map) {
-        final Player result = new Player();
-        final Ant ant = new Ant();
-        final HexCell midMap = map.getCellAt(map.getRowCount() / 2, map.getColCount() / 2);
-        assert midMap != null;
-        moveUnitToPosition(ant, midMap, 0);
-        result.addUnit(ant);
+        final Player result = new Player(false, "Black ants");
+        createAntAtPosition(map, result, map.getRowCount() / 2, map.getColCount() / 2);
+        createAntAtPosition(map, result, map.getRowCount() / 2, map.getColCount() / 2 + 3);
         return result;
+    }
+
+    private void createAntAtPosition(HexMap map, Player player, int row, int column) {
+        final HexCell cell = map.getCellAt(row, column);
+        if (cell != null) {
+            final Ant ant = new Ant();
+            moveUnitToPosition(ant, cell, 0);
+            player.addUnit(ant);
+        } else {
+            logger.error("Null destination cell for ant creation : " + new MapLocation(row, column));
+        }
     }
 
     /**
      * @return true if end of game
      */
     private boolean nextPlayer() {
-        currentPlayer = (currentPlayer + 1) % players.size();
-        if (currentPlayer == 0) {
-            if (currentTurn >= totalTurns) {
-                return true;
+        int i = players.indexOf(currentPlayer);
+        if (i >= 0) {
+            i = (i + 1) % players.size();
+            if (i == 0) {
+                if (currentTurn >= totalTurns) {
+                    return true;
+                }
+                currentTurn++;
             }
-            currentTurn++;
+        } else {
+            i = 0;
         }
-        logger.info(String.format("Turn %d/%d, player %d", currentTurn, totalTurns, currentPlayer));
-        final List<Unit> units = players.get(currentPlayer).getUnits();
+        currentPlayer = players.get(i);
+        logger.info(String.format("Turn %d/%d, player %s", currentTurn, totalTurns, currentPlayer.getName()));
+        final List<Unit> units = currentPlayer.getUnits();
         setSelectedUnit(units.isEmpty() ? null : units.get(0));
         return false;
     }
@@ -94,6 +110,7 @@ public class GameManager implements GuiCommand.Listener {
             reachableCells = new HashMap<>();
         }
         map.setHighlightedCells(reachableCells);
+        gameEventListener.onUnitUpdate(unit);
     }
 
     @Nonnull
@@ -142,6 +159,12 @@ public class GameManager implements GuiCommand.Listener {
             case RIGHT_CLICK:
                 processRightClick();
                 return;
+            case LEFT_CLICK:
+                processLeftClick();
+                return;
+            case CYCLE:
+                processCycleThroughUnits();
+                return;
             case FORWARD:
             case BACKWARD:
             case NONE:
@@ -153,6 +176,20 @@ public class GameManager implements GuiCommand.Listener {
                 logger.debug("New position : " + newPosition.getLocation());
                 moveUnitToPosition(unit, newPosition, newPosition.getTerrain().getMovementCost());
             }
+        }
+    }
+
+    private void processCycleThroughUnits() {
+        final List<Unit> units = currentPlayer.getUnits();
+        int i = units.indexOf(selectedUnit);
+        if (i < 0) {
+            i = 0;
+        } else {
+            i = (i + 1) % units.size();
+        }
+        final Unit unit = units.get(i);
+        if (unit != selectedUnit) {
+            setSelectedUnit(unit);
         }
     }
 
@@ -173,6 +210,32 @@ public class GameManager implements GuiCommand.Listener {
                 logger.info("Movement to " + clickedCell.getLocation() + " : " + movementDone);
             }
         }
+    }
+
+    private void processLeftClick() {
+        final MapLocation clickedLocation = mapCellLocator.getLocationUnderCursor();
+        final HexCell clickedCell = clickedLocation != null ? map.getCellAt(clickedLocation) : null;
+        if (clickedCell == null) {
+            return;
+        }
+        Unit unit = getUnitAtCell(clickedCell);
+
+        // Moving the selected unit
+        final Unit selectedUnit = getSelectedUnit();
+        if (unit != null && unit != selectedUnit) {
+            setSelectedUnit(unit);
+        }
+    }
+
+    @Nullable
+    private Unit getUnitAtCell(@Nonnull HexCell clickedCell) {
+        final List<Unit> units = currentPlayer.getUnits();
+        for (Unit unit : units) {
+            if (unit.getPosition() == clickedCell) {
+                return unit;
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("UnusedReturnValue")

@@ -1,5 +1,7 @@
 package com.treil.sfgame.map;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -12,11 +14,12 @@ public class HexCell {
     @Nonnull
     private Terrain terrain;
 
-    public HexCell(int row, int column, MapGenerator mapGenerator) {
+    HexCell(int row, int column, MapGenerator mapGenerator) {
         this.location = new MapLocation(row, column);
         terrain = mapGenerator.getTerrain(row, column);
     }
 
+    @NotNull
     public MapLocation getLocation() {
         return location;
     }

@@ -36,6 +36,7 @@ public class InputController {
         addKeyMapping(Action.RIGHT, KeyInput.KEY_RIGHT);
         addKeyMapping(Action.FORWARD, KeyInput.KEY_UP);
         addKeyMapping(Action.BACKWARD, KeyInput.KEY_DOWN);
+        addKeyMapping(Action.CYCLE, KeyInput.KEY_TAB);
 
         // init mouse
         addPointerMapping(Action.LEFT_CLICK, MouseInput.BUTTON_LEFT);

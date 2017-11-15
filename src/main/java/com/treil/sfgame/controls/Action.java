@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public enum Action {
     LEFT, RIGHT, UP, DOWN, FORWARD, BACKWARD,
     LEFT_CLICK, RIGHT_CLICK,
+    CYCLE,
     NONE;
 
     private static Map<String, Action> map = null;

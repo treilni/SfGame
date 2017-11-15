@@ -2,10 +2,7 @@ package com.treil.sfgame.map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Nicolas
@@ -15,7 +12,7 @@ public class HexMap {
     @Nonnull
     final private List<HexRow> rows = new ArrayList<>();
     @Nonnull
-    final private Map<HexCell, Integer> highlightedCells = new HashMap<>();
+    final private Set<HexCell> highlightedCells = new HashSet<>();
     private boolean highlightUpdated = false;
 
     public HexMap(final int rowCount, final int columns, @Nonnull MapGenerator mapGenerator) {
@@ -115,12 +112,12 @@ public class HexMap {
 
     public void setHighlightedCells(@Nonnull Map<HexCell, Integer> cellMap) {
         highlightedCells.clear();
-        highlightedCells.putAll(cellMap);
+        highlightedCells.addAll(cellMap.keySet());
         highlightUpdated = true;
     }
 
     @Nonnull
-    public Map<HexCell, Integer> getHighlightedCells() {
+    public Set<HexCell> getHighlightedCells() {
         return highlightedCells;
     }
 
