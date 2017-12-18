@@ -1,17 +1,17 @@
 package com.treil.sfgame.gui;
 
-import javax.annotation.Nonnull;
+import com.treil.sfgame.messaging.EventListener;
+import com.treil.sfgame.messaging.guiEvents.NextTurnEvent;
 
 /**
  * @author Nicolas
  * @since 18/10/2017.
  */
 public enum GuiCommand {
-    MAP_UPDATE, END_TURN,
+    END_TURN,
     //
     ;
 
-    public interface Listener {
-        void processCommand(@Nonnull GuiCommand command);
+    public interface Listener extends EventListener<NextTurnEvent> {
     }
 }

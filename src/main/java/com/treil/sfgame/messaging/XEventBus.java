@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Nicolas
  * @since 14/12/2017.
  */
-class XEventBus {
+public class XEventBus {
     private static final XEventBus instance = new XEventBus();
 
     @Nonnull

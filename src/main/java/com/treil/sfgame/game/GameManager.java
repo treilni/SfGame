@@ -6,6 +6,8 @@ import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexDirection;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.MapLocation;
+import com.treil.sfgame.messaging.XEventBus;
+import com.treil.sfgame.messaging.guiEvents.NextTurnEvent;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Ant;
 import com.treil.sfgame.units.Unit;
@@ -49,28 +51,38 @@ public class GameManager implements GuiCommand.Listener {
         this.map = map;
         this.gameEventListener = gameEventListener;
         this.mapCellLocator = mapCellLocator;
-        final Player player1 = getDefaultPlayer(map);
+        MapLocation location1 = new MapLocation(map.getRowCount() / 4, map.getColCount() / 4);
+        final Player player1 = createPlayer("Black ants", map, location1);
         players.add(player1);
+        MapLocation location2 = new MapLocation(map.getRowCount() * 3 / 4, map.getColCount() * 3 / 4);
+        final Player redPlayer = createPlayer("Red ants", map, location2);
+        players.add(redPlayer);
         currentPlayer = player1;
         logger.info(String.format("Turn %d/%d, player %s", currentTurn, totalTurns, currentPlayer.getName()));
+        subscribe();
+    }
+
+    private void subscribe() {
+        XEventBus.registerListener(this, NextTurnEvent.class);
     }
 
     @NotNull
-    private Player getDefaultPlayer(HexMap map) {
-        final Player result = new Player(false, "Black ants");
-        createAntAtPosition(map, result, map.getRowCount() / 2, map.getColCount() / 2);
-        createAntAtPosition(map, result, map.getRowCount() / 2, map.getColCount() / 2 + 3);
+    private Player createPlayer(@Nonnull String name, HexMap map, @Nonnull MapLocation location) {
+        final Player result = new Player(false, name);
+        createAntAtPosition(map, result, location);
+        location = location.add(0, 3);
+        createAntAtPosition(map, result, location);
         return result;
     }
 
-    private void createAntAtPosition(HexMap map, Player player, int row, int column) {
-        final HexCell cell = map.getCellAt(row, column);
+    private void createAntAtPosition(@Nonnull HexMap map, @Nonnull Player player, @Nonnull MapLocation location) {
+        final HexCell cell = map.getCellAt(location);
         if (cell != null) {
             final Ant ant = new Ant();
             moveUnitToPosition(ant, cell, 0);
             player.addUnit(ant);
         } else {
-            logger.error("Null destination cell for ant creation : " + new MapLocation(row, column));
+            logger.error("Null destination cell for ant creation : " + location);
         }
     }
 
@@ -123,21 +135,16 @@ public class GameManager implements GuiCommand.Listener {
         return selectedUnit;
     }
 
+
     @Override
-    public void processCommand(@Nonnull GuiCommand command) {
-        switch (command) {
-            case END_TURN:
-                if (nextPlayer()) {
-                    endGame();
-                }
-                break;
-            default:
-                break;
+    public void onEvent(NextTurnEvent event) {
+        if (nextPlayer()) {
+            endGame();
         }
     }
 
     private void endGame() {
-
+        logger.info("Game ended");
     }
 
     public void processAction(@Nonnull Action action) {
@@ -252,5 +259,4 @@ public class GameManager implements GuiCommand.Listener {
         gameEventListener.onUnitUpdate(unit);
         return true;
     }
-
 }

@@ -47,4 +47,8 @@ public class MapLocation {
                 ", column=" + column +
                 '}';
     }
+
+    public MapLocation add(int row, int column) {
+        return new MapLocation(this.getRow() + row, this.getColumn() + column);
+    }
 }

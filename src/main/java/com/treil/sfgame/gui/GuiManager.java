@@ -3,10 +3,11 @@ package com.treil.sfgame.gui;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.simsilica.lemur.Button;
-import com.simsilica.lemur.Command;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.Label;
 import com.treil.render.geom.Size2D;
+import com.treil.sfgame.messaging.XEventBus;
+import com.treil.sfgame.messaging.guiEvents.NextTurnEvent;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.ResourceBundle;
  */
 public class GuiManager extends Container {
     private static final int ViewportHeightPercent = 15;
+
     @Nonnull
     private ResourceBundle resourceBundle;
 
@@ -77,7 +79,9 @@ public class GuiManager extends Container {
     private void initWelcomeUI(Container container) {
         container.addChild(new Label(resourceBundle.getString("game.title")));
         Button nextTurn = container.addChild(new Button(resourceBundle.getString("next.turn")));
-        nextTurn.addClickCommands((Command<Button>) source -> System.out.println("The world is yours."));
+        nextTurn.addClickCommands(button -> {
+            XEventBus.fireEvent(new NextTurnEvent());
+        });
     }
 
     @Override
