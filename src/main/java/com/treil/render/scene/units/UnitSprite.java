@@ -17,7 +17,7 @@ public abstract class UnitSprite extends Node {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
     private HexDirection facing = HexDirection.SOUTH_WEST;
 
-    public UnitSprite(AssetManager assetManager, String name, float scale) {
+    UnitSprite(AssetManager assetManager, String name, float scale) {
         final Spatial model = assetManager.loadModel(name);
         attachChild(model);
         setLocalScale(scale);

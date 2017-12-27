@@ -12,6 +12,12 @@ public class Unit {
     private int movementPoints = 0;
     private HexCell position;
     private boolean selected = false;
+    @Nonnull
+    private final UnitType type;
+
+    Unit(@Nonnull UnitType type) {
+        this.type = type;
+    }
 
     public void setMovementPoints(int movementPoints) {
         this.movementPoints = movementPoints;
@@ -35,5 +41,10 @@ public class Unit {
 
     public boolean isSelected() {
         return selected;
+    }
+
+    @Nonnull
+    public UnitType getType() {
+        return type;
     }
 }

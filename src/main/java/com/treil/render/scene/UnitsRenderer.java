@@ -11,10 +11,12 @@ import com.treil.render.scene.units.AntSprite;
 import com.treil.render.scene.units.UnitSprite;
 import com.treil.sfgame.units.Ant;
 import com.treil.sfgame.units.Unit;
+import com.treil.sfgame.units.UnitType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ class UnitsRenderer {
     private static final Logger logger = LoggerFactory.getLogger(UnitsRenderer.class);
 
     @Nonnull
-    private final Map<Class<? extends Unit>, Supplier<UnitSprite>> spriteFromClass = new HashMap<>();
+    private final Map<UnitType, Supplier<UnitSprite>> spriteFromType = new HashMap<>();
 
     @Nonnull
     private final Map<Unit, UnitSprite> spriteFromUnit = new HashMap<>();
@@ -44,7 +46,8 @@ class UnitsRenderer {
 
     UnitsRenderer(@Nonnull AssetManager assetManager, @Nonnull MapRenderer mapRenderer, @Nonnull Node rootNode) {
         this.mapRenderer = mapRenderer;
-        spriteFromClass.put(Ant.class, () -> new AntSprite(assetManager));
+        EnumSet<UnitType> antTypes = EnumSet.of(UnitType.BLACK_ANT, UnitType.RED_ANT, UnitType.YELLOW_ANT);
+        antTypes.forEach(unitType -> spriteFromType.put(unitType, () -> new AntSprite(assetManager, unitType)));
         this.rootNode = rootNode;
         final Material selectionMaterial = mapRenderer.getUnshadedMaterial(Colors.selectedUnitColor);
         selectionNode = new SelectionMarker(selectionMaterial);
@@ -52,7 +55,7 @@ class UnitsRenderer {
 
     void registerUnits(@Nonnull List<Unit> units) {
         units.forEach(unit -> {
-            final Supplier<UnitSprite> spriteSupplier = spriteFromClass.get(unit.getClass());
+            final Supplier<UnitSprite> spriteSupplier = spriteFromType.get(unit.getType());
             if (spriteSupplier != null) {
                 final UnitSprite unitSprite = spriteSupplier.get();
                 rootNode.attachChild(unitSprite);

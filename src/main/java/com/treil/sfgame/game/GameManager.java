@@ -11,7 +11,7 @@ import com.treil.sfgame.messaging.guiEvents.NextTurnEvent;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Ant;
 import com.treil.sfgame.units.Unit;
-import org.jetbrains.annotations.NotNull;
+import com.treil.sfgame.units.UnitColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,10 +52,10 @@ public class GameManager implements GuiCommand.Listener {
         this.gameEventListener = gameEventListener;
         this.mapCellLocator = mapCellLocator;
         MapLocation location1 = new MapLocation(map.getRowCount() / 4, map.getColCount() / 4);
-        final Player player1 = createPlayer("Black ants", map, location1);
+        final Player player1 = createPlayer("Black ants", map, location1, UnitColor.BLACK);
         players.add(player1);
         MapLocation location2 = new MapLocation(map.getRowCount() * 3 / 4, map.getColCount() * 3 / 4);
-        final Player redPlayer = createPlayer("Red ants", map, location2);
+        final Player redPlayer = createPlayer("Red ants", map, location2, UnitColor.RED);
         players.add(redPlayer);
         currentPlayer = player1;
         logger.info(String.format("Turn %d/%d, player %s", currentTurn, totalTurns, currentPlayer.getName()));
@@ -66,19 +66,19 @@ public class GameManager implements GuiCommand.Listener {
         XEventBus.registerListener(this, NextTurnEvent.class);
     }
 
-    @NotNull
-    private Player createPlayer(@Nonnull String name, HexMap map, @Nonnull MapLocation location) {
-        final Player result = new Player(false, name);
-        createAntAtPosition(map, result, location);
+    private Player createPlayer(@Nonnull String name, HexMap map, @Nonnull MapLocation location, @Nonnull UnitColor color) {
+        final Player result = new Player(false, name, color);
+        createAntAtPosition(map, result, location, color);
         location = location.add(0, 3);
-        createAntAtPosition(map, result, location);
+        createAntAtPosition(map, result, location, color);
         return result;
     }
 
-    private void createAntAtPosition(@Nonnull HexMap map, @Nonnull Player player, @Nonnull MapLocation location) {
+    private void createAntAtPosition(@Nonnull HexMap map, @Nonnull Player player, @Nonnull MapLocation location,
+                                     @Nonnull UnitColor color) {
         final HexCell cell = map.getCellAt(location);
         if (cell != null) {
-            final Ant ant = new Ant();
+            final Ant ant = new Ant(color);
             moveUnitToPosition(ant, cell, 0);
             player.addUnit(ant);
         } else {

@@ -6,7 +6,6 @@ import com.jme3.scene.Spatial;
 import com.treil.render.geom.Angle;
 import com.treil.render.scene.decoration.*;
 import com.treil.render.scene.material.MaterialManager;
-import com.treil.render.scene.units.AntSprite;
 import com.treil.sfgame.map.Terrain;
 
 import javax.annotation.Nonnull;
@@ -104,8 +103,6 @@ public class DecorationManager {
                 return new Flower4(materialManager);
             case PINE:
                 return new Pine(materialManager);
-            case ANT:
-                return new AntSprite(materialManager.getAssetManager());
         }
         return new Mushroom1(materialManager);
     }
