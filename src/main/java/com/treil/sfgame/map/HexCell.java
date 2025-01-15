@@ -1,6 +1,5 @@
 package com.treil.sfgame.map;
 
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +18,7 @@ public class HexCell {
         terrain = mapGenerator.getTerrain(row, column);
     }
 
-    @NotNull
+    @Nonnull
     public MapLocation getLocation() {
         return location;
     }

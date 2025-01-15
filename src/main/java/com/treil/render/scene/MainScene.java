@@ -18,7 +18,6 @@ import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.MapLocation;
 import com.treil.sfgame.player.Player;
 import com.treil.sfgame.units.Unit;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +33,7 @@ public class MainScene implements Scene, GameEventListener, MapCellLocator {
     private HexTile tileUnderCursor;
     private IdlingTimer cursorTrackTimer = new IdlingTimer(100L);
 
-    public void init(@NotNull SimpleApplication application, @NotNull HexMap map, @NotNull List<Player> players) {
+    public void init(@Nonnull SimpleApplication application, @Nonnull HexMap map, @Nonnull List<Player> players) {
         AssetManager assetManager = application.getAssetManager();
 
         final Node rootNode = application.getRootNode();

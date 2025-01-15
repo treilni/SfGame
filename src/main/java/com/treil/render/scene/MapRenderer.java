@@ -15,7 +15,6 @@ import com.treil.render.scene.tile.SelectionMarker;
 import com.treil.sfgame.map.HexCell;
 import com.treil.sfgame.map.HexMap;
 import com.treil.sfgame.map.MapLocation;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +124,7 @@ class MapRenderer implements HasExtent {
         return mat;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Vector3f getExtent() {
         final double smallRadius = hexRadius * Math.cos(Angle.DEG_30);
